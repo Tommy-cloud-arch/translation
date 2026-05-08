@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>통번역 연습</title>
+<link rel="apple-touch-icon" href="https://drive.google.com/uc?export=view&id=1-KqqHVJHINRnqCO7mAbjquhha6zttdTj">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --teal: #0ea47a;
+  --teal-light: #d1fae5;
+  --teal-mid: #6ee7b7;
+  --teal-dark: #065f46;
+  --bg: #f0fdf4;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --text: #1e293b;
+  --muted: #64748b;
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.12);
+  --shadow-lg: 0 8px 28px rgba(0,0,0,.16);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans KR', 'Inter', sans-serif;
+  font-size: 16px;
+}
+
+/* ── 화면 전환 ── */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ══════════════════════
+   TOP BAR
+══════════════════════ */
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 64px;
+  gap: 8px;
+}
+
+.top-bar .title {
+  flex: 1;
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s, border-color .15s;
+  flex-shrink: 0;
+}
+.icon-btn:hover { background: var(--bg); border-color: var(--teal); }
+.icon-btn .em { font-size: 1.1rem; }
+
+.home-btn {
+  font-size: 1.6rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  transition: background .15s;
+  flex-shrink: 0;
+}
+.home-btn:hover { background: var(--bg); }
+
+/* ══════════════════════
+   HOME
+══════════════════════ */
+.home-body {
+  padding: 20px 16px 40px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.search-wrap {
+  position: relative;
+  margin-bottom: 24px;
+}
+.search-wrap .search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  color: var(--muted);
+  pointer-events: none;
+}
+#searchInput {
+  width: 100%;
+  padding: 14px 16px 14px 44px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-family: inherit;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  box-shadow: var(--shadow-sm);
+}
+#searchInput:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(14,164,122,.15);
+}
+
+.sheet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+}
+
+.sheet-btn {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 28px 16px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+  position: relative;
+  overflow: hidden;
+}
+.sheet-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--teal-light), transparent);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.sheet-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--teal);
+}
+.sheet-btn:hover::before { opacity: 1; }
+.sheet-btn:active { transform: translateY(0); }
+
+/* ══════════════════════
+   LEARN
+══════════════════════ */
+.learn-body {
+  padding: 16px 16px 60px;
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* 카드 공통 */
+.card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 28px 24px;
+  position: relative;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.card-text {
+  font-size: 1.35rem;
+  line-height: 1.65;
+  font-weight: 500;
+  text-align: left;
+  word-break: keep-all;
+  width: 100%;
+}
+
+/* 정답 덮개 */
+.answer-cover {
+  position: absolute;
+  inset: 0;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  color: var(--muted);
+  font-weight: 500;
+  gap: 8px;
+  z-index: 10;
+  transition: opacity .2s;
+}
+.answer-cover .hint-icon { font-size: 1.4rem; }
+.answer-cover.hide { display: none; }
+
+/* TTS 버튼 */
+.tts-btn {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s, transform .15s;
+  z-index: 5;
+}
+.tts-btn:hover { background: var(--teal-light); transform: scale(1.1); }
+
+/* 라벨 배지 */
+.card-label {
+  position: absolute;
+  top: -1px;
+  left: 22px;
+  background: var(--teal);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 0 0 10px 10px;
+  letter-spacing: .04em;
+}
+
+/* ── 진행률 ── */
+.progress-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.progress-bar-track {
+  height: 8px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal-mid), var(--teal));
+  border-radius: 99px;
+  transition: width .25s ease;
+}
+#progressSlider {
+  width: 100%;
+  accent-color: var(--teal);
+  cursor: pointer;
+}
+
+/* ── 컨트롤 행 ── */
+.nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.nav-arrow {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  font-size: 1.4rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: background .15s, box-shadow .15s, transform .15s;
+  flex-shrink: 0;
+}
+.nav-arrow:hover { background: var(--bg); box-shadow: var(--shadow-md); transform: scale(1.06); }
+.nav-arrow:active { transform: scale(0.96); }
+.nav-arrow:disabled { opacity: .35; pointer-events: none; }
+
+.controls-center {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.ctrl-btn {
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--text);
+  transition: background .15s, border-color .15s, color .15s;
+  white-space: nowrap;
+}
+.ctrl-btn:hover { background: var(--bg); border-color: var(--teal); }
+.ctrl-btn.active {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: white;
+}
+
+.icon-mark {
+  font-size: 1.6rem;
+  cursor: pointer;
+  transition: transform .15s;
+  user-select: none;
+}
+.icon-mark:hover { transform: scale(1.2); }
+
+/* 정답 보기 버튼 */
+.show-answer-btn {
+  width: 100%;
+  padding: 18px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: var(--teal);
+  color: white;
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background .15s, transform .15s, box-shadow .15s;
+}
+.show-answer-btn:hover {
+  background: var(--teal-dark);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+.show-answer-btn:active { transform: translateY(0); }
+
+/* ══════════════════════
+   FAVORITE / SAVED
+══════════════════════ */
+.list-body {
+  padding: 20px 16px 40px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+  font-size: 1rem;
+}
+.empty-state .em-icon { font-size: 3rem; display: block; margin-bottom: 12px; }
+
+.fav-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px 52px 20px 22px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  cursor: pointer;
+  transition: box-shadow .15s, border-color .15s, transform .15s;
+}
+.fav-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--teal);
+  transform: translateY(-2px);
+}
+
+.fav-sheet {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 6px;
+  letter-spacing: .04em;
+}
+.fav-ko {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.55;
+  margin-bottom: 6px;
+}
+.fav-vi {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.fav-del {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: var(--muted);
+  transition: background .15s, color .15s;
+}
+.fav-del:hover { background: #fee2e2; color: #dc2626; }
+
+/* ── 로딩 오버레이 ── */
+#loadingOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,.7);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-size: 1rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+#loadingOverlay.show { display: flex; }
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--teal-light);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── 반응형 ── */
+@media (max-width: 600px) {
+  .card-text { font-size: 1.2rem; }
+  .card { padding: 22px 20px; min-height: 140px; }
+  .top-bar { height: 58px; }
+  .icon-btn { padding: 7px 10px; font-size: 0.82rem; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- 로딩 오버레이 -->
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+  <span>불러오는 중...</span>
+</div>
+
+<!-- ============================================================ HOME ============================================================ -->
+<div id="screen-home" class="screen active">
+  <div class="top-bar">
+    <button class="icon-btn" id="goFavorite">
+      <span class="em">📘</span> 즐겨찾기
+    </button>
+    <div class="title">통번역 연습</div>
+    <button class="icon-btn" id="goSaved">
+      <span class="em">🔖</span> 북마크
+    </button>
+  </div>
+
+  <div class="home-body">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input id="searchInput" type="text" placeholder="시트 이름 검색...">
+    </div>
+    <div id="sheetGrid" class="sheet-grid"></div>
+  </div>
+</div>
+
+
+<!-- ============================================================ LEARN ============================================================ -->
+<div id="screen-learn" class="screen">
+  <div class="top-bar">
+    <button class="home-btn" id="learnGoHome" aria-label="홈으로">🏠</button>
+    <div class="title" id="learnTitle">Sheet1 — 1번</div>
+    <div style="width:40px"></div>
+  </div>
+
+  <div class="learn-body">
+
+    <!-- 문제 카드 -->
+    <div class="card" id="questionCard">
+      <div class="card-label" id="questionLabel">문제</div>
+      <div class="card-text" id="learnQuestion"></div>
+      <button class="tts-btn" id="learnTTS" aria-label="문제 읽기">🔊</button>
+    </div>
+
+    <!-- 정답 카드 -->
+    <div class="card" id="answerCard">
+      <div class="card-label" id="answerLabel" style="background:#475569">정답</div>
+      <div id="answerCover" class="answer-cover">
+        <span class="hint-icon">💬</span> 통역하여 말해보세요
+      </div>
+      <div class="card-text" id="learnAnswer"></div>
+      <button class="tts-btn" id="learnTTSAnswer" aria-label="정답 읽기">🔊</button>
+    </div>
+
+    <!-- 진행률 -->
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span id="progressText">1 / 1</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+      </div>
+      <input type="range" id="progressSlider" min="1" max="1" value="1">
+    </div>
+
+    <!-- 이전/다음 + 컨트롤 -->
+    <div class="nav-row">
+      <button class="nav-arrow" id="learnPrev" aria-label="이전">◀</button>
+
+      <div class="controls-center">
+        <span class="icon-mark" id="learnBookmark" title="즐겨찾기">📘</span>
+        <button class="ctrl-btn" id="learnSwitch">KO ↔ VI</button>
+        <button class="ctrl-btn" id="answerToggleBtn">정답 항상 끄기</button>
+        <span class="icon-mark" id="learnSaveIcon" title="북마크">🔖</span>
+      </div>
+
+      <button class="nav-arrow" id="learnNext" aria-label="다음">▶</button>
+    </div>
+
+    <!-- 정답 보기/숨기기 -->
+    <button class="show-answer-btn" id="showAnswerBtn">정답 보기 / 숨기기</button>
+
+  </div>
+</div>
+
+
+<!-- ============================================================ FAVORITE ============================================================ -->
+<div id="screen-favorite" class="screen">
+  <div class="top-bar">
+    <button class="home-btn" onclick="showScreen('home')">🏠</button>
+    <div class="title">즐겨찾기</div>
+    <div style="width:40px"></div>
+  </div>
+  <div class="list-body" id="favoriteList"></div>
+</div>
+
+
+<!-- ============================================================ SAVED ============================================================ -->
+<div id="screen-saved" class="screen">
+  <div class="top-bar">
+    <button class="home-btn" onclick="showScreen('home')">🏠</button>
+    <div class="title">북마크 — 카드를 누르면 이동</div>
+    <div style="width:40px"></div>
+  </div>
+  <div class="list-body" id="savedList"></div>
+</div>
+
+
+<script>
+/* ─────────────────────────────────────────────────────
+   GitHub Pages 전용 버전
+   - Google Sheets API key 사용 안 함
+   - GAS / Apps Script 사용 안 함
+   - 공개 Google Sheet를 Google Visualization JSONP 방식으로 읽음
+   - Google Sheet 공유 설정: 링크가 있는 모든 사용자 → 뷰어
+───────────────────────────────────────────────────── */
+const SPREADSHEET_ID = '1Pg2C4O6owsc89RcX7RN_mZ1c_htMZb2SI1b6ZdTh1Bg';
+
+// 현재 공개 시트에서 확인된 탭 이름입니다. 새 탭을 추가하면 여기에 이름만 추가하세요.
+const SHEET_NAMES = [
+  '사명 20250105',
+  '그리스도인의 가정생활(도서)',
+  '가족전도 20250119',
+  '복음과 신앙생활 20250223',
+  '그리스도인의 말씀생활 20250302',
+  '그리스도인의 기도생활 20250309',
+  '그리스도인의 교제생활 20250316',
+  '그리스도인의 전도생활 20250323',
+  '용어'
+];
+
+const DEFAULT_SHEET = '그리스도인의 교제생활 20250316';
+const sheetCache = new Map();
+
+/* ── 로딩 표시 ── */
+const overlay = document.getElementById('loadingOverlay');
+function setLoading(on) { overlay.classList.toggle('show', on); }
+
+/* ── 화면 전환 ── */
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function showGridError(message) {
+  document.getElementById('sheetGrid').innerHTML =
+    `<p style="color:#dc2626;font-size:1rem;line-height:1.6;padding:24px;background:#fff;border:1px solid #fecaca;border-radius:16px;">⚠️ ${message}</p>`;
+}
+
+/* ── Google Visualization JSONP 로더 ── */
+function loadGvizTable(sheetName) {
+  if (sheetCache.has(sheetName)) return Promise.resolve(sheetCache.get(sheetName));
+
+  return new Promise((resolve, reject) => {
+    const callbackName = '__gvizCallback_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    const script = document.createElement('script');
+    const timeout = setTimeout(() => {
+      cleanup();
+      reject(new Error('Google Sheets 응답 시간이 초과되었습니다.'));
+    }, 15000);
+
+    function cleanup() {
+      clearTimeout(timeout);
+      delete window[callbackName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    window[callbackName] = (response) => {
+      cleanup();
+      if (!response || response.status === 'error') {
+        const detail = response?.errors?.map(e => e.detailed_message || e.message).join('\n') || '알 수 없는 오류';
+        reject(new Error(detail));
+        return;
+      }
+      const values = gvizToValues(response.table);
+      sheetCache.set(sheetName, values);
+      resolve(values);
+    };
+
+    const tqx = `out:json;responseHandler:${callbackName}`;
+    const url = `https://docs.google.com/spreadsheets/d/${encodeURIComponent(SPREADSHEET_ID)}/gviz/tq?sheet=${encodeURIComponent(sheetName)}&tqx=${encodeURIComponent(tqx)}`;
+    script.src = url;
+    script.onerror = () => {
+      cleanup();
+      reject(new Error('Google Sheets 스크립트를 불러오지 못했습니다. 시트 공유 설정을 확인하세요.'));
+    };
+    document.head.appendChild(script);
+  });
+}
+
+function cellValue(cell) {
+  if (!cell) return '';
+  if (cell.f !== undefined && cell.f !== null) return String(cell.f).trim();
+  if (cell.v !== undefined && cell.v !== null) return String(cell.v).trim();
+  return '';
+}
+
+function gvizToValues(table) {
+  if (!table || !Array.isArray(table.rows)) return [];
+
+  const labels = (table.cols || []).map(col => String(col.label || '').trim());
+  const rows = table.rows.map(row => (row.c || []).map(cellValue));
+
+  // Google Visualization이 첫 행을 헤더로 인식한 경우, 헤더를 다시 붙여 기존 파서가 읽게 합니다.
+  if (isHeaderRow(labels)) return [labels, ...rows];
+  return rows;
+}
+
+function isHeaderRow(row) {
+  const joined = (row || []).map(v => String(v || '').trim().toLowerCase()).join('|');
+  return /번호|number|no\.?|순번|korean|한국|한글|ko|kr|vietnamese|베트남|vi|vn/.test(joined);
+}
+
+function findColumnIndex(headers, candidates, fallback) {
+  const lower = headers.map(h => String(h || '').trim().toLowerCase());
+  const idx = lower.findIndex(h => candidates.some(c => h.includes(c)));
+  return idx >= 0 ? idx : fallback;
+}
+
+function normalizeSentences(values) {
+  if (!Array.isArray(values) || values.length === 0) return [];
+
+  const rows = values.filter(row => Array.isArray(row) && row.some(cell => String(cell || '').trim() !== ''));
+  if (!rows.length) return [];
+
+  const hasHeader = isHeaderRow(rows[0]);
+  const headers = hasHeader ? rows[0] : [];
+  const dataRows = hasHeader ? rows.slice(1) : rows;
+
+  const numberIndex = hasHeader ? findColumnIndex(headers, ['번호', 'number', 'no', '순번'], 0) : 0;
+  const koreanIndex = hasHeader ? findColumnIndex(headers, ['korean', '한국', '한글', 'ko', 'kr'], 1) : 1;
+  const vietnameseIndex = hasHeader ? findColumnIndex(headers, ['vietnamese', '베트남', 'vi', 'vn'], 2) : 2;
+
+  return dataRows
+    .map((row, index) => {
+      const number = String(row[numberIndex] ?? index + 1).trim();
+      const korean = String(row[koreanIndex] ?? '').trim();
+      const vietnamese = String(row[vietnameseIndex] ?? '').trim();
+      return { number, korean, vietnamese };
+    })
+    .filter(item => item.korean || item.vietnamese);
+}
+
+async function getSentences(sheetName) {
+  const values = await loadGvizTable(sheetName);
+  return normalizeSentences(values);
+}
+
+async function getFavoriteSentences(numbers) {
+  const wanted = new Set(numbers.map(String));
+  const result = [];
+
+  for (const sheet of SHEET_NAMES) {
+    try {
+      const rows = await getSentences(sheet);
+      rows.forEach(item => {
+        if (wanted.has(String(item.number))) result.push({ ...item, sheet });
+      });
+    } catch (e) {
+      console.warn(`즐겨찾기 로딩 실패: ${sheet}`, e);
+    }
+  }
+  return result;
+}
+
+/* ═══════════ HOME ═══════════ */
+let allSheets = [];
+
+(function initHome() {
+  allSheets = [...SHEET_NAMES];
+  // 전달받은 기본 gid에 해당하는 시트를 앞쪽에 배치합니다.
+  allSheets.sort((a, b) => {
+    if (a === DEFAULT_SHEET) return -1;
+    if (b === DEFAULT_SHEET) return 1;
+    return 0;
+  });
+  renderSheetGrid(allSheets);
+})();
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  const q = e.target.value.trim();
+  renderSheetGrid(q ? allSheets.filter(n => n.includes(q)) : allSheets);
+});
+
+function renderSheetGrid(list) {
+  const grid = document.getElementById('sheetGrid');
+  grid.innerHTML = '';
+  if (!list.length) {
+    grid.innerHTML = '<p style="color:var(--muted);font-size:1rem;text-align:center;padding:40px 0;">결과 없음</p>';
+    return;
+  }
+  list.forEach(name => {
+    const div = document.createElement('div');
+    div.className = 'sheet-btn';
+    div.textContent = name;
+    div.onclick = () => { loadLearnSheet(name); showScreen('learn'); };
+    grid.appendChild(div);
+  });
+}
+
+/* ═══════════ LEARN ═══════════ */
+let currentSheet = '';
+let currentSentences = [];
+let currentIndex = 0;
+let learnMode = 'KR_TO_VI';
+let alwaysShowAnswer = false;
+
+let bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '{}');
+let savedPages = JSON.parse(localStorage.getItem('savedPages') || '[]');
+
+const cover = document.getElementById('answerCover');
+const toggleBtn = document.getElementById('answerToggleBtn');
+
+async function loadLearnSheet(sheetName, targetNumber = null) {
+  setLoading(true);
+  currentSheet = sheetName;
+  try {
+    currentSentences = await getSentences(sheetName);
+    if (!currentSentences.length) {
+      alert('이 시트에서 읽을 문장을 찾지 못했습니다. A열=번호, B열=한글, C열=베트남어 형식인지 확인하세요.');
+      return;
+    }
+    if (targetNumber !== null) {
+      const idx = currentSentences.findIndex(s => String(s.number) === String(targetNumber));
+      currentIndex = idx >= 0 ? idx : 0;
+    } else {
+      currentIndex = 0;
+    }
+    renderLearn();
+  } catch(e) {
+    console.error(e);
+    alert('Google Sheet를 불러오지 못했습니다.\n\n' + e.message + '\n\n확인: 시트 공유가 “링크가 있는 모든 사용자 → 뷰어”인지 확인하세요.');
+  } finally {
+    setLoading(false);
+  }
+}
+
+function bookmarkKey(sheetName, number) {
+  // 기존 북마크 호환을 위해 화면 표시는 number 기준으로 유지하되, 저장은 sheet::number 형태도 지원합니다.
+  return `${sheetName}::${number}`;
+}
+
+function isBookmarked(item) {
+  return Boolean(bookmarks[bookmarkKey(currentSheet, item.number)] || bookmarks[item.number]);
+}
+
+function renderLearn() {
+  const item = currentSentences[currentIndex];
+  if (!item) return;
+
+  const total = currentSentences.length;
+  const pos = currentIndex + 1;
+  const pct = Math.round((pos / total) * 100);
+
+  document.getElementById('learnTitle').textContent =
+    `${currentSheet} — ${item.number}번`;
+
+  document.getElementById('learnBookmark').textContent =
+    isBookmarked(item) ? '📕' : '📘';
+  document.getElementById('learnSaveIcon').textContent =
+    savedPages.some(p => p.sheet === currentSheet && String(p.number) === String(item.number))
+      ? '📍' : '🔖';
+
+  const q = learnMode === 'KR_TO_VI' ? item.korean : item.vietnamese;
+  const a = learnMode === 'KR_TO_VI' ? item.vietnamese : item.korean;
+  document.getElementById('learnQuestion').textContent = q;
+  document.getElementById('learnAnswer').textContent = a;
+
+  document.getElementById('questionLabel').textContent =
+    learnMode === 'KR_TO_VI' ? '🇰🇷 한국어' : '🇻🇳 베트남어';
+  document.getElementById('answerLabel').textContent =
+    learnMode === 'KR_TO_VI' ? '🇻🇳 베트남어' : '🇰🇷 한국어';
+
+  document.getElementById('progressText').textContent = `${pos} / ${total}`;
+  document.getElementById('progressPct').textContent = `${pct}%`;
+  document.getElementById('progressFill').style.width = `${pct}%`;
+  const slider = document.getElementById('progressSlider');
+  slider.max = total;
+  slider.value = pos;
+
+  cover.classList.toggle('hide', alwaysShowAnswer);
+
+  document.getElementById('learnPrev').disabled = currentIndex === 0;
+  document.getElementById('learnNext').disabled = currentIndex === total - 1;
+  toggleBtn.textContent = alwaysShowAnswer ? '정답 항상 켜기' : '정답 항상 끄기';
+  toggleBtn.classList.toggle('active', alwaysShowAnswer);
+}
+
+/* 이전/다음 */
+document.getElementById('learnPrev').onclick = () => {
+  if (currentIndex > 0) { currentIndex--; renderLearn(); }
+};
+document.getElementById('learnNext').onclick = () => {
+  if (currentIndex < currentSentences.length - 1) { currentIndex++; renderLearn(); }
+};
+
+/* 슬라이더 */
+document.getElementById('progressSlider').addEventListener('input', e => {
+  const idx = Number(e.target.value) - 1;
+  if (idx >= 0 && idx < currentSentences.length) { currentIndex = idx; renderLearn(); }
+});
+
+/* 언어 전환 */
+document.getElementById('learnSwitch').onclick = () => {
+  learnMode = learnMode === 'KR_TO_VI' ? 'VI_TO_KR' : 'KR_TO_VI';
+  renderLearn();
+};
+
+/* 정답 항상 켜기/끄기 */
+toggleBtn.onclick = () => {
+  alwaysShowAnswer = !alwaysShowAnswer;
+  cover.classList.toggle('hide', alwaysShowAnswer);
+  toggleBtn.textContent = alwaysShowAnswer ? '정답 항상 켜기' : '정답 항상 끄기';
+  toggleBtn.classList.toggle('active', alwaysShowAnswer);
+};
+
+/* 정답 보기/숨기기 */
+document.getElementById('showAnswerBtn').onclick = () => {
+  cover.classList.toggle('hide');
+};
+
+/* 홈 버튼 */
+document.getElementById('learnGoHome').onclick = () => showScreen('home');
+
+/* TTS */
+function speak(text, lang) {
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = lang;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+document.getElementById('learnTTS').onclick = () => {
+  speak(document.getElementById('learnQuestion').textContent,
+        learnMode === 'KR_TO_VI' ? 'ko-KR' : 'vi-VN');
+};
+document.getElementById('learnTTSAnswer').onclick = () => {
+  speak(document.getElementById('learnAnswer').textContent,
+        learnMode === 'KR_TO_VI' ? 'vi-VN' : 'ko-KR');
+};
+
+/* 즐겨찾기 토글 */
+document.getElementById('learnBookmark').onclick = () => {
+  const item = currentSentences[currentIndex];
+  const key = bookmarkKey(currentSheet, item.number);
+  if (isBookmarked(item)) {
+    delete bookmarks[key];
+    delete bookmarks[item.number]; // 기존 저장값 정리
+  } else {
+    bookmarks[key] = true;
+  }
+  localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+  renderLearn();
+};
+
+/* 북마크 토글 */
+document.getElementById('learnSaveIcon').onclick = () => {
+  const item = currentSentences[currentIndex];
+  const idx = savedPages.findIndex(
+    p => p.sheet === currentSheet && String(p.number) === String(item.number)
+  );
+  if (idx >= 0) savedPages.splice(idx, 1);
+  else savedPages.push({ sheet: currentSheet, number: item.number, korean: item.korean });
+  localStorage.setItem('savedPages', JSON.stringify(savedPages));
+  renderLearn();
+};
+
+/* ═══════════ FAVORITE ═══════════ */
+document.getElementById('goFavorite').onclick = async () => {
+  showScreen('favorite');
+  setLoading(true);
+
+  const favEntries = Object.keys(bookmarks);
+  if (!favEntries.length) {
+    document.getElementById('favoriteList').innerHTML =
+      '<div class="empty-state"><span class="em-icon">📘</span>즐겨찾기가 없습니다</div>';
+    setLoading(false);
+    return;
+  }
+
+  try {
+    const items = [];
+    for (const entry of favEntries) {
+      if (entry.includes('::')) {
+        const [sheet, number] = entry.split('::');
+        const rows = await getSentences(sheet);
+        const found = rows.find(row => String(row.number) === String(number));
+        if (found) items.push({ ...found, sheet });
+      } else {
+        // 예전 방식으로 저장된 번호만 있는 북마크도 최대한 복구합니다.
+        const recovered = await getFavoriteSentences([entry]);
+        items.push(...recovered);
+      }
+    }
+    renderFavorite(items);
+  } catch(e) {
+    console.error(e);
+    document.getElementById('favoriteList').innerHTML =
+      `<div class="empty-state"><span class="em-icon">⚠️</span>즐겨찾기를 불러오지 못했습니다<br>${e.message}</div>`;
+  } finally {
+    setLoading(false);
+  }
+};
+
+function renderFavorite(items) {
+  const box = document.getElementById('favoriteList');
+  box.innerHTML = '';
+  if (!items.length) {
+    box.innerHTML = '<div class="empty-state"><span class="em-icon">📘</span>즐겨찾기가 없습니다</div>';
+    return;
+  }
+  items.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'fav-card';
+    card.style.cursor = 'default';
+    card.innerHTML = `
+      <div class="fav-sheet">[${item.sheet}] ${item.number}번</div>
+      <div class="fav-ko">${item.korean}</div>
+      <div class="fav-vi">${item.vietnamese}</div>
+    `;
+    const del = document.createElement('button');
+    del.className = 'fav-del';
+    del.textContent = '✕';
+    del.onclick = e => {
+      e.stopPropagation();
+      delete bookmarks[bookmarkKey(item.sheet, item.number)];
+      delete bookmarks[item.number];
+      localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+      card.remove();
+    };
+    card.appendChild(del);
+    box.appendChild(card);
+  });
+}
+
+/* ═══════════ SAVED ═══════════ */
+document.getElementById('goSaved').onclick = () => {
+  showScreen('saved');
+  renderSaved();
+};
+
+function renderSaved() {
+  const box = document.getElementById('savedList');
+  box.innerHTML = '';
+  if (!savedPages.length) {
+    box.innerHTML = '<div class="empty-state"><span class="em-icon">🔖</span>저장된 페이지가 없습니다</div>';
+    return;
+  }
+  savedPages.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'fav-card';
+    card.innerHTML = `
+      <div class="fav-sheet">[${item.sheet}] ${item.number}번</div>
+      <div class="fav-ko">${item.korean}</div>
+    `;
+    const del = document.createElement('button');
+    del.className = 'fav-del';
+    del.textContent = '✕';
+    del.onclick = e => {
+      e.stopPropagation();
+      const idx = savedPages.findIndex(
+        p => p.sheet === item.sheet && String(p.number) === String(item.number)
+      );
+      if (idx >= 0) savedPages.splice(idx, 1);
+      localStorage.setItem('savedPages', JSON.stringify(savedPages));
+      card.remove();
+    };
+    card.appendChild(del);
+
+    card.onclick = () => {
+      showScreen('learn');
+      loadLearnSheet(item.sheet, item.number);
+    };
+    box.appendChild(card);
+  });
+}
+</script>
+</body>
+</html>
