@@ -770,7 +770,7 @@ const DEFAULT_SHEET = '그리스도인의 교제생활 20250316';
 const sheetCache = new Map();
 
 async function fetchSheetNames() {
-  const fields = 'sheets.properties.title';
+  const fields = 'sheets(properties(title))';
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(SPREADSHEET_ID)}?fields=${encodeURIComponent(fields)}&key=${encodeURIComponent(GOOGLE_SHEETS_API_KEY)}`;
   const response = await fetch(url);
   const data = await response.json().catch(() => null);
@@ -929,6 +929,7 @@ let currentCategorySheets = [];
 
 async function initHome() {
   setLoading(true);
+  setCategoryCountText('로딩');
   try {
     allSheets = await fetchSheetNames();
     allSheets.sort((a, b) => {
@@ -936,14 +937,15 @@ async function initHome() {
       if (b === DEFAULT_SHEET) return 1;
       return a.localeCompare(b, 'ko');
     });
+    console.log('불러온 구글시트 탭 목록:', allSheets);
 
     updateCategoryCounts();
     showMainMenu();
   } catch (e) {
     console.error(e);
     allSheets = [];
-    updateCategoryCounts();
     showMainMenu();
+    setCategoryCountText('오류');
     alert('구글시트 탭 목록을 불러오지 못했습니다.
 
 ' + e.message + '
@@ -973,6 +975,13 @@ function updateCategoryCounts() {
     const count = allSheets.filter(config.test).length;
     const el = document.getElementById(config.countId);
     if (el) el.textContent = `${count}개`;
+  });
+}
+
+function setCategoryCountText(text) {
+  Object.values(CATEGORY_CONFIG).forEach(config => {
+    const el = document.getElementById(config.countId);
+    if (el) el.textContent = text;
   });
 }
 
