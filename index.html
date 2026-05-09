@@ -1075,56 +1075,100 @@ html[data-theme="dark"] .usage-content {
   }
 }
 
+/* Globe / UI lang toggle */
+.ui-lang-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255,255,255,.9);
+  color: var(--ink);
+  font-size: .82rem;
+  font-weight: 800;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+}
+.ui-lang-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(16,185,129,.35);
+  box-shadow: var(--shadow-md);
+  background: #fff;
+}
+.ui-lang-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: 0 0 auto;
+}
+html[data-theme="dark"] .ui-lang-btn {
+  background: rgba(15,23,42,.82);
+  color: var(--ink);
+  border-color: var(--line);
+}
+
 </style>
 </head>
 <body>
 <div id="loadingOverlay">
 <div class="spinner"></div>
-<span>불러오는 중...</span>
+<span id="loadingText">불러오는 중...</span>
 </div>
 <div class="screen active" id="screen-home">
 <div class="top-bar">
-<div class="top-slot">
+<div class="top-slot" style="gap:8px;">
 <button class="icon-btn" id="goFavorite" type="button">
 <span class="em"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"></path></svg></span>
-<span class="label-text">단어장</span>
+<span class="label-text" id="goFavoriteLabel">단어장</span>
+</button>
+<button class="ui-lang-btn" id="uiLangToggle" type="button" aria-label="UI language">
+<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3a14 14 0 0 1 0 18"></path><path d="M12 3a14 14 0 0 0 0 18"></path></svg>
+<span id="uiLangText">VI</span>
 </button>
 </div>
 <div class="top-slot grow">
-<div class="top-title brand-title" id="topAppTitle"><span class="brand-mark"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6z"></path><path d="M19 14l.8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8z"></path><path d="M5 15l.6 1.4L7 17l-1.4.6L5 19l-.6-1.4L3 17l1.4-.6z"></path></svg></span>통번역 연습</div>
-<button class="main-menu-link" id="topMainMenuBtn" style="display:none;" type="button">메인메뉴</button>
+<div class="top-title brand-title" id="topAppTitle"><span class="brand-mark"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6z"></path><path d="M19 14l.8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8z"></path><path d="M5 15l.6 1.4L7 17l-1.4.6L5 19l-.6-1.4L3 17l1.4-.6z"></path></svg></span><span id="appTitleText">통번역 연습</span></div>
+<button class="main-menu-link" id="topMainMenuBtn" style="display:none;" type="button"><span id="topMainMenuLabel">메인메뉴</span></button>
 </div>
 <div class="top-slot top-actions">
 <button aria-label="다크모드 전환" class="theme-toggle" title="다크모드 전환" type="button"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 15.5A8.5 8.5 0 0 1 8.5 3 7 7 0 1 0 21 15.5z"></path></svg></button>
 <button class="icon-btn" id="goSaved" type="button">
 <span class="em"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"></path></svg></span>
-<span class="label-text">북마크</span>
+<span class="label-text" id="goSavedLabel">북마크</span>
 </button>
 </div>
 </div>
 <div class="menu-body" id="mainMenuArea">
 <div class="hero-card">
-<div class="menu-title">메인메뉴</div>
-<div class="menu-subtitle">학습할 자료 유형을 선택하고, 문장 학습 · 단어장 · 북마크를 한 화면에서 편하게 관리하세요.</div>
+<div class="menu-title" id="menuTitle">메인메뉴</div>
+<div class="menu-subtitle" id="menuSubtitle">학습할 자료 유형을 선택하고, 문장 학습 · 단어장 · 북마크를 한 화면에서 편하게 관리하세요.</div>
 <div class="menu-grid">
 <button class="menu-btn" data-category="sermon" type="button">
 <div>
 <span class="menu-icon"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect height="12" rx="3" width="6" x="9" y="2"></rect><path d="M5 10a7 7 0 0 0 14 0"></path><path d="M12 17v5"></path><path d="M8 22h8"></path></svg></span>
-<div class="menu-label">설교</div>
+<div class="menu-label" id="sermonLabel">설교</div>
 </div>
 <span class="menu-count" id="sermonCount">0개</span>
 </button>
 <button class="menu-btn" data-category="book" type="button">
 <div>
 <span class="menu-icon"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 19V5a2 2 0 0 1 2-2h4v18H6a2 2 0 0 1-2-2z"></path><path d="M10 3h4v18h-4"></path><path d="M14 4h4a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2h-4"></path><path d="M6.5 7h1"></path><path d="M16.5 8h1"></path></svg></span>
-<div class="menu-label">도서</div>
+<div class="menu-label" id="bookLabel">도서</div>
 </div>
 <span class="menu-count" id="bookCount">0개</span>
 </button>
 <button class="menu-btn" data-category="term" type="button">
 <div>
 <span class="menu-icon"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 3h10l4 4v14H7z"></path><path d="M17 3v5h5"></path><path d="M3 7v14h4"></path><path d="M10 12h8"></path><path d="M10 16h6"></path></svg></span>
-<div class="menu-label">용어</div>
+<div class="menu-label" id="termLabel">용어</div>
 </div>
 <span class="menu-count" id="termCount">0개</span>
 </button>
@@ -1133,26 +1177,11 @@ html[data-theme="dark"] .usage-content {
 <button class="usage-toggle" id="usageToggle" type="button" aria-expanded="false">
 <span class="usage-toggle-left">
 <span class="usage-toggle-icon"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18h.01"></path><path d="M12 14a4 4 0 1 0-4-4"></path><path d="M4 4h16v16H4z"></path></svg></span>
-<span>사용법 보기</span>
+<span id="usageToggleLabel">사용법 보기</span>
 </span>
 <span class="usage-chevron"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m9 18 6-6-6-6"></path></svg></span>
 </button>
 <div class="usage-content" id="usageContent">
-<h3>버튼과 기능 안내</h3>
-<ul class="usage-list">
-<li><strong>설교</strong>: 설교 자료를 날짜순으로 불러옵니다.</li>
-<li><strong>도서</strong>: 도서 자료를 불러옵니다.</li>
-<li><strong>용어</strong>: 성경용어, 고유명사용어, 교회용어 등의 자료를 불러옵니다.</li>
-<li><strong>메인메뉴</strong>: 하위 화면에서 처음 메뉴 화면으로 돌아갑니다.</li>
-<li><strong>스크롤/진도바</strong>: 문장 번호를 빠르게 이동하거나 현재 학습 위치를 확인합니다.</li>
-<li><strong>KO ↔ VI</strong>: 한국어에서 베트남어, 베트남어에서 한국어 방향으로 학습 언어를 전환합니다.</li>
-<li><strong>정답 보기 / 숨기기</strong>: 현재 문장의 정답 영역만 즉시 열거나 가립니다.</li>
-<li><strong>정답 항상 켜기/끄기</strong>: 다음 문장으로 넘어가도 정답을 계속 보이게 하거나 다시 가립니다.</li>
-<li><strong>단어장</strong>: 중요 문장을 저장해 나중에 단어장 화면에서 모아보고 검색할 수 있습니다.</li>
-<li><strong>북마크</strong>: 현재 페이지를 저장하고 북마크 탭에서 저장된 페이지 버튼을 누르면 바로 이동합니다.</li>
-<li><strong>다크모드/라이트모드</strong>: 상단의 달/해 버튼으로 화면 테마를 전환합니다.</li>
-<li><strong>스피커</strong>: 문제 또는 정답 문장을 음성으로 들어볼 수 있습니다.</li>
-</ul>
 </div>
 </div>
 </div>
@@ -1174,7 +1203,7 @@ html[data-theme="dark"] .usage-content {
 <button aria-label="메인메뉴로" class="home-btn" id="learnGoHome"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5 10.5V21h5v-6h4v6h5V10.5"></path></svg></button>
 </div>
 <div class="top-slot grow">
-<button class="main-menu-link" id="learnMainMenuBtn" type="button">메인메뉴</button>
+<button class="main-menu-link" id="learnMainMenuBtn" type="button"><span id="learnMainMenuLabel">메인메뉴</span></button>
 </div>
 <div class="top-slot top-actions" style="width:46px; justify-content:flex-end;">
 <button aria-label="다크모드 전환" class="theme-toggle" title="다크모드 전환" type="button"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 15.5A8.5 8.5 0 0 1 8.5 3 7 7 0 1 0 21 15.5z"></path></svg></button>
@@ -1190,7 +1219,7 @@ html[data-theme="dark"] .usage-content {
 <div class="card" id="answerCard">
 <div class="card-label" id="answerLabel" style="background:#475569">정답</div>
 <div class="answer-cover" id="answerCover">
-<span class="hint-icon"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12a8 8 0 0 1-8 8H6l-3 2 1.5-4A8 8 0 1 1 21 12z"></path><path d="M8 10h8"></path><path d="M8 14h5"></path></svg></span> 통역하여 말해보세요
+<span class="hint-icon"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12a8 8 0 0 1-8 8H6l-3 2 1.5-4A8 8 0 1 1 21 12z"></path><path d="M8 10h8"></path><path d="M8 14h5"></path></svg></span> <span id="answerCoverText">통역하여 말해보세요</span>
       </div>
 <div class="card-text" id="learnAnswer"></div>
 <button aria-label="정답 읽기" class="tts-btn" id="learnTTSAnswer"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 9v6h4l5 4V5L8 9z"></path><path d="M16 9.5a4 4 0 0 1 0 5"></path><path d="M19 7a8 8 0 0 1 0 10"></path></svg></button>
@@ -1226,7 +1255,7 @@ html[data-theme="dark"] .usage-content {
 <button aria-label="메인메뉴로" class="home-btn" onclick="showMainMenu()"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5 10.5V21h5v-6h4v6h5V10.5"></path></svg></button>
 </div>
 <div class="top-slot grow">
-<div class="top-title">단어장</div>
+<div class="top-title" id="favScreenTitle">단어장</div>
 </div>
 <div class="top-slot top-actions" style="width:46px; justify-content:flex-end;">
 <button aria-label="다크모드 전환" class="theme-toggle" title="다크모드 전환" type="button"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 15.5A8.5 8.5 0 0 1 8.5 3 7 7 0 1 0 21 15.5z"></path></svg></button>
@@ -1246,7 +1275,7 @@ html[data-theme="dark"] .usage-content {
 <button aria-label="메인메뉴로" class="home-btn" onclick="showMainMenu()"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5 10.5V21h5v-6h4v6h5V10.5"></path></svg></button>
 </div>
 <div class="top-slot grow">
-<div class="top-title">북마크</div>
+<div class="top-title" id="savedScreenTitle">북마크</div>
 </div>
 <div class="top-slot top-actions" style="width:46px; justify-content:flex-end;">
 <button aria-label="다크모드 전환" class="theme-toggle" title="다크모드 전환" type="button"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 15.5A8.5 8.5 0 0 1 8.5 3 7 7 0 1 0 21 15.5z"></path></svg></button>
@@ -1262,6 +1291,204 @@ html[data-theme="dark"] .usage-content {
 </div>
 <script>
 
+/* ── i18n ── */
+const UI = {
+  ko: {
+    appTitle: '통번역 연습',
+    mainMenu: '메인메뉴',
+    menuSubtitle: '학습할 자료 유형을 선택하고, 문장 학습 · 단어장 · 북마크를 한 화면에서 편하게 관리하세요.',
+    sermon: '설교',
+    book: '도서',
+    term: '용어',
+    wordbook: '단어장',
+    bookmark: '북마크',
+    usageTitle: '사용법 보기',
+    usageClose: '사용법 닫기',
+    usageHeading: '버튼과 기능 안내',
+    loading: '불러오는 중...',
+    sheetSearch: '시트 이름 검색...',
+    wordbookSearch: '단어장 검색...',
+    bookmarkSearch: '북마크 검색...',
+    tryInterpret: '통역하여 말해보세요',
+    showHideAnswer: '정답 보기 / 숨기기',
+    answerAlwaysOn: '정답 항상 켜기',
+    answerAlwaysOff: '정답 항상 끄기',
+    noCategory: '결과가 없습니다',
+    noWordbook: '단어장에 저장된 문장이 없습니다',
+    noSaved: '저장된 페이지가 없습니다',
+    noSearch: '검색 결과가 없습니다',
+    items: n => `${n}개`,
+    loadingCount: '불러오는 중',
+    loadSheetFail: 'Google Sheet를 불러오지 못했습니다.',
+    sheetFormatAlert: '이 시트에서 읽을 문장을 찾지 못했습니다. A열=번호, B열=한글, C열=베트남어 형식인지 확인하세요.',
+    apiFail: '구글시트 탭 목록을 불러오지 못했습니다.',
+    checkPerm: 'API 키 제한, Google Sheets API 활성화, 스프레드시트 공유 권한을 확인하세요.',
+    sheetPerm: "확인: 시트 공유가 '링크가 있는 모든 사용자 → 뷰어'인지 확인하세요.",
+    sheetNotFound: '구글시트에서 탭 이름을 찾지 못했습니다.',
+    gvizTimeout: 'Google Sheets 응답 시간이 초과되었습니다.',
+    scriptFail: 'Google Sheets 스크립트를 불러오지 못했습니다. 시트 공유 설정을 확인하세요.',
+    unknownError: '알 수 없는 오류',
+    favLoadFail: '단어장을 불러오지 못했습니다',
+    darkMode: '다크모드 전환',
+    lightMode: '라이트모드 전환',
+    korean: '한국어',
+    vietnamese: '베트남어',
+    usage: [
+      ['설교', '설교 자료를 날짜순으로 불러옵니다.'],
+      ['도서', '도서 자료를 불러옵니다.'],
+      ['용어', '성경용어, 고유명사용어, 교회용어 등의 자료를 불러옵니다.'],
+      ['메인메뉴', '하위 화면에서 처음 메뉴 화면으로 돌아갑니다.'],
+      ['스크롤/진도바', '문장 번호를 빠르게 이동하거나 현재 학습 위치를 확인합니다.'],
+      ['KO ↔ VI', '한국어에서 베트남어, 베트남어에서 한국어 방향으로 학습 언어를 전환합니다.'],
+      ['정답 보기 / 숨기기', '현재 문장의 정답 영역만 즉시 열거나 가립니다.'],
+      ['정답 항상 켜기/끄기', '다음 문장으로 넘어가도 정답을 계속 보이게 하거나 다시 가립니다.'],
+      ['단어장', '중요 문장을 저장해 나중에 단어장 화면에서 모아보고 검색할 수 있습니다.'],
+      ['북마크', '현재 페이지를 저장하고 북마크 탭에서 저장된 페이지 버튼을 누르면 바로 이동합니다.'],
+      ['다크모드/라이트모드', '상단의 달/해 버튼으로 화면 테마를 전환합니다.'],
+      ['스피커', '문제 또는 정답 문장을 음성으로 들어볼 수 있습니다.']
+    ]
+  },
+  vi: {
+    appTitle: 'Luyện dịch thuật',
+    mainMenu: 'Menu chính',
+    menuSubtitle: 'Chọn loại tài liệu để luyện dịch từng câu, quản lý sổ từ vựng và đánh dấu trên một màn hình.',
+    sermon: 'Bài giảng',
+    book: 'Sách',
+    term: 'Thuật ngữ',
+    wordbook: 'Sổ từ vựng',
+    bookmark: 'Đánh dấu',
+    usageTitle: 'Xem hướng dẫn',
+    usageClose: 'Đóng hướng dẫn',
+    usageHeading: 'Hướng dẫn các nút và chức năng',
+    loading: 'Đang tải...',
+    sheetSearch: 'Tìm tên trang tính...',
+    wordbookSearch: 'Tìm trong sổ từ vựng...',
+    bookmarkSearch: 'Tìm trong đánh dấu...',
+    tryInterpret: 'Hãy thử dịch miệng câu này',
+    showHideAnswer: 'Hiện / ẩn đáp án',
+    answerAlwaysOn: 'Luôn hiện đáp án',
+    answerAlwaysOff: 'Luôn ẩn đáp án',
+    noCategory: 'Không có kết quả',
+    noWordbook: 'Chưa có câu nào trong sổ từ vựng',
+    noSaved: 'Chưa có trang nào được lưu',
+    noSearch: 'Không có kết quả tìm kiếm',
+    items: n => `${n} mục`,
+    loadingCount: 'Đang tải',
+    loadSheetFail: 'Không tải được Google Sheet.',
+    sheetFormatAlert: 'Không tìm thấy câu trong trang tính này. Hãy kiểm tra định dạng: cột A=số, cột B=tiếng Hàn, cột C=tiếng Việt.',
+    apiFail: 'Không tải được danh sách trang tính Google Sheet.',
+    checkPerm: 'Hãy kiểm tra giới hạn API key, trạng thái bật Google Sheets API và quyền chia sẻ bảng tính.',
+    sheetPerm: 'Kiểm tra: bảng tính cần được chia sẻ ở chế độ Bất kỳ ai có liên kết → Người xem.',
+    sheetNotFound: 'Không tìm thấy tên trang tính trong Google Sheet.',
+    gvizTimeout: 'Google Sheets phản hồi quá thời gian.',
+    scriptFail: 'Không tải được script Google Sheets. Hãy kiểm tra cài đặt chia sẻ.',
+    unknownError: 'Lỗi không xác định',
+    favLoadFail: 'Không tải được sổ từ vựng',
+    darkMode: 'Chuyển chế độ tối',
+    lightMode: 'Chuyển chế độ sáng',
+    korean: 'Tiếng Hàn',
+    vietnamese: 'Tiếng Việt',
+    usage: [
+      ['Bài giảng', 'Tải tài liệu bài giảng theo thứ tự ngày.'],
+      ['Sách', 'Tải tài liệu sách.'],
+      ['Thuật ngữ', 'Tải các tài liệu về thuật ngữ Kinh Thánh, danh từ riêng, thuật ngữ nhà thờ, v.v.'],
+      ['Menu chính', 'Quay lại màn hình menu chính từ các màn hình con.'],
+      ['Cuộn / thanh tiến độ', 'Di chuyển nhanh đến số câu hoặc kiểm tra vị trí học hiện tại.'],
+      ['KO ↔ VI', 'Chuyển hướng luyện tập giữa Hàn→Việt và Việt→Hàn.'],
+      ['Hiện / ẩn đáp án', 'Mở hoặc che ngay phần đáp án của câu hiện tại.'],
+      ['Luôn hiện / luôn ẩn đáp án', 'Đặt đáp án luôn hiển thị hoặc tự động bị che khi chuyển câu.'],
+      ['Sổ từ vựng', 'Lưu những câu quan trọng để xem lại và tìm kiếm trong màn hình sổ từ vựng.'],
+      ['Đánh dấu', 'Lưu trang hiện tại và nhấn nút trang đã lưu trong tab đánh dấu để chuyển đến ngay.'],
+      ['Chế độ tối / sáng', 'Dùng nút mặt trăng/mặt trời ở phía trên để chuyển giao diện.'],
+      ['Loa', 'Nghe câu hỏi hoặc đáp án bằng giọng đọc.']
+    ]
+  }
+};
+
+let uiLang = localStorage.getItem('uiLang') || 'ko';
+const $ = id => document.getElementById(id);
+const t = (k, ...args) => typeof UI[uiLang][k] === 'function' ? UI[uiLang][k](...args) : (UI[uiLang][k] ?? UI.ko[k] ?? k);
+
+function applyI18n() {
+  document.documentElement.lang = uiLang === 'ko' ? 'ko' : 'vi';
+  document.title = t('appTitle');
+
+  // Globe button
+  $('uiLangText').textContent = uiLang === 'ko' ? 'VI' : 'KO';
+
+  // App title
+  $('appTitleText').textContent = t('appTitle');
+
+  // Menu title & subtitle
+  $('menuTitle').textContent = t('mainMenu');
+  $('menuSubtitle').textContent = t('menuSubtitle');
+
+  // Category labels in menu
+  $('sermonLabel').textContent = t('sermon');
+  $('bookLabel').textContent = t('book');
+  $('termLabel').textContent = t('term');
+
+  // Top bar buttons
+  $('goFavoriteLabel').textContent = t('wordbook');
+  $('goSavedLabel').textContent = t('bookmark');
+
+  // Main menu buttons (both home and learn screens)
+  $('topMainMenuLabel').textContent = t('mainMenu');
+  $('learnMainMenuLabel').textContent = t('mainMenu');
+
+  // Screen titles
+  $('favScreenTitle').textContent = t('wordbook');
+  $('savedScreenTitle').textContent = t('bookmark');
+
+  // Learn screen
+  $('answerCoverText').textContent = t('tryInterpret');
+  $('showAnswerBtn').textContent = t('showHideAnswer');
+
+  // Loading text
+  $('loadingText').textContent = t('loading');
+
+  // Search placeholders
+  $('searchInput').placeholder = currentCategoryKey
+    ? `${t(CATEGORY_CONFIG[currentCategoryKey].labelKey)} ${t('sheetSearch')}`
+    : t('sheetSearch');
+  $('favoriteSearch').placeholder = t('wordbookSearch');
+  $('savedSearch').placeholder = t('bookmarkSearch');
+
+  // Category heading (if showing)
+  if (currentCategoryKey) {
+    $('categoryHeading').textContent = t(CATEGORY_CONFIG[currentCategoryKey].labelKey);
+    renderSheetGrid(filterSheets());
+  }
+
+  // Usage guide
+  renderUsageGuide();
+
+  // Category counts
+  updateCategoryCounts();
+
+  // answerToggleBtn
+  if (currentSentences.length) {
+    $('answerToggleBtn').textContent = alwaysShowAnswer ? t('answerAlwaysOn') : t('answerAlwaysOff');
+    // re-render learn labels
+    const item = currentSentences[currentIndex];
+    if (item) {
+      $('questionLabel').textContent = learnMode === 'KR_TO_VI' ? `KO ${t('korean')}` : `VI ${t('vietnamese')}`;
+      $('answerLabel').textContent = learnMode === 'KR_TO_VI' ? `VI ${t('vietnamese')}` : `KO ${t('korean')}`;
+    }
+  }
+
+  // Re-render lists if active
+  if ($('screen-favorite').classList.contains('active')) renderFavorite(filterFavoriteItems());
+  if ($('screen-saved').classList.contains('active')) renderSaved(filterSavedItems());
+}
+
+$('uiLangToggle').addEventListener('click', () => {
+  uiLang = uiLang === 'ko' ? 'vi' : 'ko';
+  localStorage.setItem('uiLang', uiLang);
+  applyI18n();
+});
+
+/* ── Icons ── */
 const ICONS = {
   book: '<svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/></svg>',
   bookFilled: '<svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/><path d="M8 6h8"/><path d="M8 10h6"/></svg>',
@@ -1295,7 +1522,7 @@ function setTheme(theme) {
   localStorage.setItem('theme', theme);
   document.querySelectorAll('.theme-toggle').forEach(btn => {
     btn.innerHTML = icon(theme === 'dark' ? 'sun' : 'moon');
-    btn.title = theme === 'dark' ? '라이트모드 전환' : '다크모드 전환';
+    btn.title = theme === 'dark' ? t('lightMode') : t('darkMode');
     btn.setAttribute('aria-label', btn.title);
   });
 }
@@ -1311,22 +1538,51 @@ function emptyState(iconName, text) {
   return `<div class="empty-state">${icon(iconName)}<div>${text}</div></div>`;
 }
 
+/* ── Usage guide ── */
+function renderUsageGuide() {
+  const open = $('usageGuide').classList.contains('open');
+  $('usageToggleLabel').textContent = open ? t('usageClose') : t('usageTitle');
+  const content = $('usageContent');
+  const items = UI[uiLang].usage;
+  content.innerHTML = `<h3>${t('usageHeading')}</h3><ul class="usage-list">${
+    items.map(([title, desc]) => `<li><strong>${escapeHtml(title)}</strong>: ${escapeHtml(desc)}</li>`).join('')
+  }</ul>`;
+}
+
+function initUsageGuide() {
+  const guide = $('usageGuide');
+  const toggle = $('usageToggle');
+  if (!guide || !toggle) return;
+  toggle.addEventListener('click', () => {
+    const open = !guide.classList.contains('open');
+    guide.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    $('usageToggleLabel').textContent = open ? t('usageClose') : t('usageTitle');
+    renderUsageGuide();
+  });
+}
+
+function escapeHtml(v) {
+  return String(v ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+}
+
+/* ── App state ── */
 const SPREADSHEET_ID = '1Pg2C4O6owsc89RcX7RN_mZ1c_htMZb2SI1b6ZdTh1Bg';
 const GOOGLE_SHEETS_API_KEY = 'AIzaSyC-OVbR7yvIm0KoY-8zSOt6ENAyxDH4_5k';
 
 const CATEGORY_CONFIG = {
   sermon: {
-    label: '설교',
+    labelKey: 'sermon',
     countId: 'sermonCount',
     test: name => /20\d{6}/.test(name)
   },
   book: {
-    label: '도서',
+    labelKey: 'book',
     countId: 'bookCount',
     test: name => name.includes('(도서)')
   },
   term: {
-    label: '용어',
+    labelKey: 'term',
     countId: 'termCount',
     test: name => name.includes('용어')
   }
@@ -1347,9 +1603,9 @@ let savedPages = JSON.parse(localStorage.getItem('savedPages') || '[]');
 let currentFavoriteItems = [];
 let currentSavedItems = [];
 
-const overlay = document.getElementById('loadingOverlay');
-const cover = document.getElementById('answerCover');
-const toggleBtn = document.getElementById('answerToggleBtn');
+const overlay = $('loadingOverlay');
+const cover = $('answerCover');
+const toggleBtn = $('answerToggleBtn');
 
 function setLoading(on) {
   overlay.classList.toggle('show', on);
@@ -1362,7 +1618,7 @@ function showScreen(name) {
 }
 
 function showGridError(message) {
-  document.getElementById('sheetGrid').innerHTML = `<div class="error-box">${icon('alert')} ${message}</div>`;
+  $('sheetGrid').innerHTML = `<div class="error-box">${icon('alert')} ${message}</div>`;
 }
 
 function parseDateFromName(name) {
@@ -1383,6 +1639,11 @@ function sortSheetsForCategory(categoryKey, sheets) {
   return list.sort((a, b) => a.localeCompare(b, 'ko'));
 }
 
+function filterSheets() {
+  const q = $('searchInput').value.trim();
+  return q ? currentCategorySheets.filter(n => n.includes(q)) : currentCategorySheets;
+}
+
 async function fetchSheetNames() {
   const fields = 'sheets(properties(title))';
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(SPREADSHEET_ID)}?fields=${encodeURIComponent(fields)}&key=${encodeURIComponent(GOOGLE_SHEETS_API_KEY)}`;
@@ -1390,7 +1651,7 @@ async function fetchSheetNames() {
   const data = await response.json().catch(() => null);
 
   if (!response.ok || data?.error) {
-    throw new Error(data?.error?.message || '구글시트 탭 목록을 불러오지 못했습니다.');
+    throw new Error(data?.error?.message || t('apiFail'));
   }
 
   const names = (data.sheets || [])
@@ -1398,7 +1659,7 @@ async function fetchSheetNames() {
     .filter(Boolean);
 
   if (!names.length) {
-    throw new Error('구글시트에서 탭 이름을 찾지 못했습니다.');
+    throw new Error(t('sheetNotFound'));
   }
 
   return names;
@@ -1412,7 +1673,7 @@ function loadGvizTable(sheetName) {
     const script = document.createElement('script');
     const timeout = setTimeout(() => {
       cleanup();
-      reject(new Error('Google Sheets 응답 시간이 초과되었습니다.'));
+      reject(new Error(t('gvizTimeout')));
     }, 15000);
 
     function cleanup() {
@@ -1424,7 +1685,7 @@ function loadGvizTable(sheetName) {
     window[callbackName] = (response) => {
       cleanup();
       if (!response || response.status === 'error') {
-        const detail = response?.errors?.map(e => e.detailed_message || e.message).join('\n') || '알 수 없는 오류';
+        const detail = response?.errors?.map(e => e.detailed_message || e.message).join('\n') || t('unknownError');
         reject(new Error(detail));
         return;
       }
@@ -1438,7 +1699,7 @@ function loadGvizTable(sheetName) {
     script.src = url;
     script.onerror = () => {
       cleanup();
-      reject(new Error('Google Sheets 스크립트를 불러오지 못했습니다. 시트 공유 설정을 확인하세요.'));
+      reject(new Error(t('scriptFail')));
     };
     document.head.appendChild(script);
   });
@@ -1531,7 +1792,7 @@ async function initHome() {
     allSheets = [];
     updateCategoryCounts();
     showMainMenu();
-    alert(`구글시트 탭 목록을 불러오지 못했습니다.\n\n${e.message}\n\nAPI 키 제한, Google Sheets API 활성화, 스프레드시트 공유 권한을 확인하세요.`);
+    alert(`${t('apiFail')}\n\n${e.message}\n\n${t('checkPerm')}`);
   } finally {
     setLoading(false);
   }
@@ -1540,20 +1801,21 @@ async function initHome() {
 function updateCategoryCounts() {
   Object.entries(CATEGORY_CONFIG).forEach(([key, config]) => {
     const count = allSheets.filter(config.test).length;
-    const el = document.getElementById(config.countId);
-    if (el) el.textContent = `${count}개`;
+    const el = $(config.countId);
+    if (el) el.textContent = allSheets.length ? t('items', count) : t('loadingCount');
   });
 }
 
 function showMainMenu() {
   currentCategoryKey = null;
   currentCategorySheets = [];
-  document.getElementById('mainMenuArea').style.display = 'block';
-  document.getElementById('sheetListArea').style.display = 'none';
-  document.getElementById('searchInput').value = '';
-  document.getElementById('topAppTitle').style.display = 'inline-flex';
-  document.getElementById('topMainMenuBtn').style.display = 'none';
+  $('mainMenuArea').style.display = 'block';
+  $('sheetListArea').style.display = 'none';
+  $('searchInput').value = '';
+  $('topAppTitle').style.display = 'inline-flex';
+  $('topMainMenuBtn').style.display = 'none';
   showScreen('home');
+  applyI18n();
 }
 
 function openCategory(categoryKey) {
@@ -1563,24 +1825,24 @@ function openCategory(categoryKey) {
   currentCategoryKey = categoryKey;
   currentCategorySheets = sortSheetsForCategory(categoryKey, allSheets.filter(config.test));
 
-  document.getElementById('categoryHeading').textContent = config.label;
-  document.getElementById('searchInput').value = '';
-  document.getElementById('searchInput').placeholder = `${config.label} 시트 이름 검색...`;
-  document.getElementById('mainMenuArea').style.display = 'none';
-  document.getElementById('sheetListArea').style.display = 'block';
-  document.getElementById('topAppTitle').style.display = 'none';
-  document.getElementById('topMainMenuBtn').style.display = 'inline-flex';
+  $('categoryHeading').textContent = t(config.labelKey);
+  $('searchInput').value = '';
+  $('searchInput').placeholder = `${t(config.labelKey)} ${t('sheetSearch')}`;
+  $('mainMenuArea').style.display = 'none';
+  $('sheetListArea').style.display = 'block';
+  $('topAppTitle').style.display = 'none';
+  $('topMainMenuBtn').style.display = 'inline-flex';
 
   renderSheetGrid(currentCategorySheets);
   showScreen('home');
 }
 
 function renderSheetGrid(list) {
-  const grid = document.getElementById('sheetGrid');
+  const grid = $('sheetGrid');
   grid.innerHTML = '';
   if (!list.length) {
-    const label = currentCategoryKey ? CATEGORY_CONFIG[currentCategoryKey].label : '시트';
-    grid.innerHTML = emptyState('folder', `${label} 결과가 없습니다`);
+    const label = currentCategoryKey ? t(CATEGORY_CONFIG[currentCategoryKey].labelKey) : '';
+    grid.innerHTML = emptyState('folder', label ? `${label} ${t('noCategory')}` : t('noCategory'));
     return;
   }
   list.forEach(name => {
@@ -1602,7 +1864,7 @@ async function loadLearnSheet(sheetName, targetNumber = null) {
   try {
     currentSentences = await getSentences(sheetName);
     if (!currentSentences.length) {
-      alert('이 시트에서 읽을 문장을 찾지 못했습니다. A열=번호, B열=한글, C열=베트남어 형식인지 확인하세요.');
+      alert(t('sheetFormatAlert'));
       return;
     }
     if (targetNumber !== null) {
@@ -1614,7 +1876,7 @@ async function loadLearnSheet(sheetName, targetNumber = null) {
     renderLearn();
   } catch (e) {
     console.error(e);
-    alert(`Google Sheet를 불러오지 못했습니다.\n\n${e.message}\n\n확인: 시트 공유가 '링크가 있는 모든 사용자 → 뷰어'인지 확인하세요.`);
+    alert(`${t('loadSheetFail')}\n\n${e.message}\n\n${t('sheetPerm')}`);
   } finally {
     setLoading(false);
   }
@@ -1636,72 +1898,72 @@ function renderLearn() {
   const pos = currentIndex + 1;
   const pct = Math.round((pos / total) * 100);
 
-  document.getElementById('learnTitle').textContent = `${currentSheet} — ${item.number}번`;
-  document.getElementById('learnBookmark').innerHTML = icon(isBookmarked(item) ? 'bookFilled' : 'book');
-  document.getElementById('learnSaveIcon').innerHTML = icon(savedPages.some(p => p.sheet === currentSheet && String(p.number) === String(item.number)) ? 'bookmarkFilled' : 'bookmark');
+  $('learnTitle').textContent = `${currentSheet} — ${item.number}번`;
+  $('learnBookmark').innerHTML = icon(isBookmarked(item) ? 'bookFilled' : 'book');
+  $('learnSaveIcon').innerHTML = icon(savedPages.some(p => p.sheet === currentSheet && String(p.number) === String(item.number)) ? 'bookmarkFilled' : 'bookmark');
 
   const q = learnMode === 'KR_TO_VI' ? item.korean : item.vietnamese;
   const a = learnMode === 'KR_TO_VI' ? item.vietnamese : item.korean;
-  document.getElementById('learnQuestion').textContent = q;
-  document.getElementById('learnAnswer').textContent = a;
+  $('learnQuestion').textContent = q;
+  $('learnAnswer').textContent = a;
 
-  document.getElementById('questionLabel').textContent = learnMode === 'KR_TO_VI' ? 'KO 한국어' : 'VI 베트남어';
-  document.getElementById('answerLabel').textContent = learnMode === 'KR_TO_VI' ? 'VI 베트남어' : 'KO 한국어';
+  $('questionLabel').textContent = learnMode === 'KR_TO_VI' ? `KO ${t('korean')}` : `VI ${t('vietnamese')}`;
+  $('answerLabel').textContent = learnMode === 'KR_TO_VI' ? `VI ${t('vietnamese')}` : `KO ${t('korean')}`;
 
-  document.getElementById('progressText').textContent = `${pos} / ${total}`;
-  document.getElementById('progressPct').textContent = `${pct}%`;
-  document.getElementById('progressFill').style.width = `${pct}%`;
-  const slider = document.getElementById('progressSlider');
+  $('progressText').textContent = `${pos} / ${total}`;
+  $('progressPct').textContent = `${pct}%`;
+  $('progressFill').style.width = `${pct}%`;
+  const slider = $('progressSlider');
   slider.max = total;
   slider.value = pos;
 
   cover.classList.toggle('hide', alwaysShowAnswer);
-  document.getElementById('learnPrev').disabled = currentIndex === 0;
-  document.getElementById('learnNext').disabled = currentIndex === total - 1;
-  toggleBtn.textContent = alwaysShowAnswer ? '정답 항상 켜기' : '정답 항상 끄기';
+  $('learnPrev').disabled = currentIndex === 0;
+  $('learnNext').disabled = currentIndex === total - 1;
+  toggleBtn.textContent = alwaysShowAnswer ? t('answerAlwaysOn') : t('answerAlwaysOff');
   toggleBtn.classList.toggle('active', alwaysShowAnswer);
 }
 
-document.getElementById('learnPrev').onclick = () => {
+$('learnPrev').onclick = () => {
   if (currentIndex > 0) {
     currentIndex--;
     renderLearn();
   }
 };
-document.getElementById('learnNext').onclick = () => {
+$('learnNext').onclick = () => {
   if (currentIndex < currentSentences.length - 1) {
     currentIndex++;
     renderLearn();
   }
 };
-document.getElementById('progressSlider').addEventListener('input', e => {
+$('progressSlider').addEventListener('input', e => {
   const idx = Number(e.target.value) - 1;
   if (idx >= 0 && idx < currentSentences.length) {
     currentIndex = idx;
     renderLearn();
   }
 });
-document.getElementById('learnSwitch').onclick = () => {
+$('learnSwitch').onclick = () => {
   learnMode = learnMode === 'KR_TO_VI' ? 'VI_TO_KR' : 'KR_TO_VI';
   renderLearn();
 };
 toggleBtn.onclick = () => {
   alwaysShowAnswer = !alwaysShowAnswer;
   cover.classList.toggle('hide', alwaysShowAnswer);
-  toggleBtn.textContent = alwaysShowAnswer ? '정답 항상 켜기' : '정답 항상 끄기';
+  toggleBtn.textContent = alwaysShowAnswer ? t('answerAlwaysOn') : t('answerAlwaysOff');
   toggleBtn.classList.toggle('active', alwaysShowAnswer);
 };
-document.getElementById('showAnswerBtn').onclick = () => {
+$('showAnswerBtn').onclick = () => {
   cover.classList.toggle('hide');
 };
-document.getElementById('learnGoHome').onclick = showMainMenu;
-document.getElementById('learnMainMenuBtn').onclick = showMainMenu;
+$('learnGoHome').onclick = showMainMenu;
+$('learnMainMenuBtn').onclick = showMainMenu;
 
-document.getElementById('learnTTS').onclick = () => {
-  speak(document.getElementById('learnQuestion').textContent, learnMode === 'KR_TO_VI' ? 'ko-KR' : 'vi-VN');
+$('learnTTS').onclick = () => {
+  speak($('learnQuestion').textContent, learnMode === 'KR_TO_VI' ? 'ko-KR' : 'vi-VN');
 };
-document.getElementById('learnTTSAnswer').onclick = () => {
-  speak(document.getElementById('learnAnswer').textContent, learnMode === 'KR_TO_VI' ? 'vi-VN' : 'ko-KR');
+$('learnTTSAnswer').onclick = () => {
+  speak($('learnAnswer').textContent, learnMode === 'KR_TO_VI' ? 'vi-VN' : 'ko-KR');
 };
 
 function speak(text, lang) {
@@ -1711,7 +1973,7 @@ function speak(text, lang) {
   speechSynthesis.speak(utterance);
 }
 
-document.getElementById('learnBookmark').onclick = () => {
+$('learnBookmark').onclick = () => {
   const item = currentSentences[currentIndex];
   const key = bookmarkKey(currentSheet, item.number);
   if (isBookmarked(item)) {
@@ -1724,7 +1986,7 @@ document.getElementById('learnBookmark').onclick = () => {
   renderLearn();
 };
 
-document.getElementById('learnSaveIcon').onclick = () => {
+$('learnSaveIcon').onclick = () => {
   const item = currentSentences[currentIndex];
   const idx = savedPages.findIndex(p => p.sheet === currentSheet && String(p.number) === String(item.number));
   if (idx >= 0) {
@@ -1736,14 +1998,14 @@ document.getElementById('learnSaveIcon').onclick = () => {
   renderLearn();
 };
 
-document.getElementById('goFavorite').onclick = async () => {
+$('goFavorite').onclick = async () => {
   showScreen('favorite');
   setLoading(true);
 
   const favEntries = Object.keys(bookmarks);
   if (!favEntries.length) {
     currentFavoriteItems = [];
-    document.getElementById('favoriteList').innerHTML = emptyState('book', '단어장에 저장된 문장이 없습니다');
+    $('favoriteList').innerHTML = emptyState('book', t('noWordbook'));
     setLoading(false);
     return;
   }
@@ -1765,7 +2027,7 @@ document.getElementById('goFavorite').onclick = async () => {
     renderFavorite(filterFavoriteItems());
   } catch (e) {
     console.error(e);
-    document.getElementById('favoriteList').innerHTML = `<div class="empty-state">${icon('alert')}<div>단어장을 불러오지 못했습니다<br>${e.message}</div></div>`;
+    $('favoriteList').innerHTML = `<div class="empty-state">${icon('alert')}<div>${t('favLoadFail')}<br>${e.message}</div></div>`;
   } finally {
     setLoading(false);
   }
@@ -1777,14 +2039,14 @@ function favoriteMatches(item, q) {
   return haystack.includes(q.toLowerCase());
 }
 function filterFavoriteItems() {
-  const q = document.getElementById('favoriteSearch')?.value.trim() || '';
+  const q = $('favoriteSearch')?.value.trim() || '';
   return currentFavoriteItems.filter(item => favoriteMatches(item, q));
 }
 function renderFavorite(items) {
-  const box = document.getElementById('favoriteList');
+  const box = $('favoriteList');
   box.innerHTML = '';
   if (!items.length) {
-    box.innerHTML = emptyState('book', currentFavoriteItems.length ? '검색 결과가 없습니다' : '단어장에 저장된 문장이 없습니다');
+    box.innerHTML = emptyState('book', currentFavoriteItems.length ? t('noSearch') : t('noWordbook'));
     return;
   }
   items.forEach(item => {
@@ -1813,7 +2075,7 @@ function renderFavorite(items) {
   });
 }
 
-document.getElementById('goSaved').onclick = () => {
+$('goSaved').onclick = () => {
   showScreen('saved');
   renderSaved();
 };
@@ -1824,18 +2086,18 @@ function savedMatches(item, q) {
   return haystack.includes(q.toLowerCase());
 }
 function filterSavedItems() {
-  const q = document.getElementById('savedSearch')?.value.trim() || '';
+  const q = $('savedSearch')?.value.trim() || '';
   return currentSavedItems.filter(item => savedMatches(item, q));
 }
 function renderSaved(items = null) {
-  const box = document.getElementById('savedList');
+  const box = $('savedList');
   if (items === null) {
     currentSavedItems = [...savedPages];
     items = filterSavedItems();
   }
   box.innerHTML = '';
   if (!items.length) {
-    box.innerHTML = emptyState('bookmark', currentSavedItems.length ? '검색 결과가 없습니다' : '저장된 페이지가 없습니다');
+    box.innerHTML = emptyState('bookmark', currentSavedItems.length ? t('noSearch') : t('noSaved'));
     return;
   }
   items.forEach(item => {
@@ -1866,36 +2128,22 @@ function renderSaved(items = null) {
   });
 }
 
-document.getElementById('topMainMenuBtn').onclick = showMainMenu;
-document.getElementById('favoriteSearch').addEventListener('input', () => renderFavorite(filterFavoriteItems()));
-document.getElementById('savedSearch').addEventListener('input', () => renderSaved(filterSavedItems()));
+$('topMainMenuBtn').onclick = showMainMenu;
+$('favoriteSearch').addEventListener('input', () => renderFavorite(filterFavoriteItems()));
+$('savedSearch').addEventListener('input', () => renderSaved(filterSavedItems()));
 document.querySelectorAll('.menu-btn[data-category]').forEach(btn => {
   btn.addEventListener('click', () => openCategory(btn.dataset.category));
 });
-document.getElementById('searchInput').addEventListener('input', e => {
+$('searchInput').addEventListener('input', e => {
   const q = e.target.value.trim();
   const base = currentCategorySheets;
   renderSheetGrid(q ? base.filter(n => n.includes(q)) : base);
 });
 
 renderStaticIcons();
-
-
-function initUsageGuide() {
-  const guide = document.getElementById('usageGuide');
-  const toggle = document.getElementById('usageToggle');
-  if (!guide || !toggle) return;
-
-  toggle.addEventListener('click', () => {
-    const open = !guide.classList.contains('open');
-    guide.classList.toggle('open', open);
-    toggle.setAttribute('aria-expanded', String(open));
-    toggle.querySelector('span:last-child')?.setAttribute('aria-label', open ? '접기' : '펼치기');
-  });
-}
-
 initUsageGuide();
 initTheme();
+applyI18n();
 initHome();
 </script>
 </body>
