@@ -898,6 +898,183 @@ html[data-theme="dark"] .fav-del:hover { background: rgba(127,29,29,.26); border
   }
 }
 
+
+
+/* Compact horizontal main menu cards + usage guide */
+.menu-grid {
+  gap: 12px !important;
+}
+.menu-btn {
+  min-height: 92px !important;
+  padding: 16px 18px !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  gap: 14px !important;
+}
+.menu-btn > div {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 12px !important;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.menu-icon {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 16px !important;
+  flex: 0 0 auto;
+}
+.menu-icon .svg-icon {
+  width: 25px !important;
+  height: 25px !important;
+}
+.menu-label {
+  margin-top: 0 !important;
+  white-space: nowrap;
+}
+.menu-count {
+  flex: 0 0 auto;
+  margin-top: 0 !important;
+}
+.usage-guide {
+  margin-top: 18px;
+  border: 1px solid rgba(16,185,129,.18);
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(236,253,245,.72));
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.usage-toggle {
+  width: 100%;
+  min-height: 64px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 1rem;
+  text-align: left;
+}
+.usage-toggle-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.usage-toggle-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  flex: 0 0 auto;
+}
+.usage-toggle-icon .svg-icon {
+  width: 22px;
+  height: 22px;
+}
+.usage-chevron {
+  transition: transform .18s ease;
+  color: var(--muted);
+}
+.usage-guide.open .usage-chevron {
+  transform: rotate(90deg);
+}
+.usage-content {
+  display: none;
+  border-top: 1px solid rgba(16,185,129,.16);
+  padding: 18px;
+  color: var(--text);
+}
+.usage-guide.open .usage-content {
+  display: block;
+}
+.usage-content h3 {
+  font-size: 1rem;
+  color: var(--ink);
+  margin: 0 0 10px;
+}
+.usage-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 16px;
+  list-style: none;
+}
+.usage-list li {
+  position: relative;
+  padding-left: 15px;
+  line-height: 1.58;
+  font-size: .94rem;
+  color: var(--muted);
+}
+.usage-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: .72em;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+.usage-list strong {
+  color: var(--ink);
+  font-weight: 800;
+}
+html[data-theme="dark"] .usage-guide {
+  background: linear-gradient(180deg, rgba(15,23,42,.88), rgba(15,23,42,.72));
+  border-color: var(--line);
+}
+html[data-theme="dark"] .usage-toggle {
+  color: var(--ink);
+}
+html[data-theme="dark"] .usage-content {
+  border-top-color: var(--line);
+}
+@media (max-width: 860px) {
+  .menu-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .menu-btn {
+    min-height: 78px !important;
+    padding: 14px 16px !important;
+  }
+  .usage-list {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .menu-icon {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .menu-label {
+    font-size: 1.08rem !important;
+  }
+  .menu-count {
+    padding: 6px 10px !important;
+    font-size: .8rem !important;
+  }
+  .usage-toggle {
+    min-height: 58px;
+    padding: 14px 15px;
+  }
+  .usage-content {
+    padding: 16px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -951,6 +1128,32 @@ html[data-theme="dark"] .fav-del:hover { background: rgba(127,29,29,.26); border
 </div>
 <span class="menu-count" id="termCount">0개</span>
 </button>
+</div>
+<div class="usage-guide" id="usageGuide">
+<button class="usage-toggle" id="usageToggle" type="button" aria-expanded="false">
+<span class="usage-toggle-left">
+<span class="usage-toggle-icon"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18h.01"></path><path d="M12 14a4 4 0 1 0-4-4"></path><path d="M4 4h16v16H4z"></path></svg></span>
+<span>사용법 보기</span>
+</span>
+<span class="usage-chevron"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m9 18 6-6-6-6"></path></svg></span>
+</button>
+<div class="usage-content" id="usageContent">
+<h3>버튼과 기능 안내</h3>
+<ul class="usage-list">
+<li><strong>설교</strong>: 시트명에 20xxxxxx 형식의 날짜가 들어간 설교 자료를 날짜순으로 불러옵니다.</li>
+<li><strong>도서</strong>: 시트명에 (도서)가 들어간 자료를 불러옵니다.</li>
+<li><strong>용어</strong>: 시트명에 용어가 들어간 성경용어, 고유명사용어, 교회용어 등의 자료를 불러옵니다.</li>
+<li><strong>메인메뉴</strong>: 하위 화면에서 처음 메뉴 화면으로 돌아갑니다.</li>
+<li><strong>스크롤/진도바</strong>: 문장 번호를 빠르게 이동하거나 현재 학습 위치를 확인합니다.</li>
+<li><strong>KO ↔ VI</strong>: 한국어에서 베트남어, 베트남어에서 한국어 방향으로 학습 언어를 전환합니다.</li>
+<li><strong>정답 보기 / 숨기기</strong>: 현재 문장의 정답 영역만 즉시 열거나 가립니다.</li>
+<li><strong>정답 항상 켜기/끄기</strong>: 다음 문장으로 넘어가도 정답을 계속 보이게 하거나 다시 가립니다.</li>
+<li><strong>단어장</strong>: 중요 문장을 저장해 나중에 단어장 화면에서 모아보고 검색할 수 있습니다.</li>
+<li><strong>북마크</strong>: 다시 보고 싶은 문장 위치를 저장하고 해당 문장으로 바로 이동합니다.</li>
+<li><strong>다크모드/라이트모드</strong>: 상단의 달/해 버튼으로 화면 테마를 전환합니다.</li>
+<li><strong>스피커</strong>: 문제 또는 정답 문장을 음성으로 들어볼 수 있습니다.</li>
+</ul>
+</div>
 </div>
 </div>
 </div>
@@ -1676,6 +1879,22 @@ document.getElementById('searchInput').addEventListener('input', e => {
 });
 
 renderStaticIcons();
+
+
+function initUsageGuide() {
+  const guide = document.getElementById('usageGuide');
+  const toggle = document.getElementById('usageToggle');
+  if (!guide || !toggle) return;
+
+  toggle.addEventListener('click', () => {
+    const open = !guide.classList.contains('open');
+    guide.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.querySelector('span:last-child')?.setAttribute('aria-label', open ? '접기' : '펼치기');
+  });
+}
+
+initUsageGuide();
 initTheme();
 initHome();
 </script>
