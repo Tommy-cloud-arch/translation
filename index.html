@@ -101,9 +101,114 @@ html, body {
 }
 .home-btn:hover { background: var(--bg); }
 
+
+.main-menu-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 18px;
+  border: 1.5px solid var(--teal);
+  border-radius: 999px;
+  background: var(--teal-light);
+  color: var(--teal-dark);
+  font-size: 0.95rem;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: var(--shadow-sm);
+  transition: background .15s, transform .15s, box-shadow .15s;
+}
+.main-menu-link:hover {
+  background: var(--teal-mid);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+.main-menu-link:active { transform: translateY(0); }
+
 /* ══════════════════════
    HOME
 ══════════════════════ */
+
+.menu-body {
+  padding: 36px 16px 48px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.menu-title {
+  text-align: center;
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--teal-dark);
+}
+.menu-subtitle {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.98rem;
+  margin-bottom: 28px;
+}
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.menu-btn {
+  min-height: 160px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  padding: 24px 16px;
+  font-family: inherit;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform .2s, box-shadow .2s, border-color .2s, background .2s;
+}
+.menu-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--teal);
+  background: linear-gradient(135deg, var(--surface), var(--teal-light));
+}
+.menu-btn:active { transform: translateY(-1px); }
+.menu-emoji { font-size: 2.3rem; line-height: 1; }
+.menu-label { font-size: 1.25rem; font-weight: 800; }
+.menu-desc {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.45;
+  word-break: keep-all;
+}
+.menu-count {
+  margin-top: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--teal-dark);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+.category-heading {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--teal-dark);
+  margin-bottom: 14px;
+  text-align: center;
+}
+.learn-sheet-heading {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: -2px 0 2px;
+}
+
 .home-body {
   padding: 20px 16px 40px;
   max-width: 760px;
@@ -483,6 +588,8 @@ html, body {
 
 /* ── 반응형 ── */
 @media (max-width: 600px) {
+  .menu-grid { grid-template-columns: 1fr; }
+  .menu-btn { min-height: 132px; }
   .card-text { font-size: 1.2rem; }
   .card { padding: 22px 20px; min-height: 140px; }
   .top-bar { height: 58px; }
@@ -505,13 +612,44 @@ html, body {
     <button class="icon-btn" id="goFavorite">
       <span class="em">📘</span> 즐겨찾기
     </button>
-    <div class="title">통번역 연습</div>
+    <button class="main-menu-link" id="topMainMenuBtn" type="button">메인메뉴</button>
     <button class="icon-btn" id="goSaved">
       <span class="em">🔖</span> 북마크
     </button>
   </div>
 
-  <div class="home-body">
+  <!-- 초기화면: 메인메뉴 -->
+  <div id="mainMenuArea" class="menu-body">
+    <div class="menu-title">메인메뉴</div>
+    <div class="menu-subtitle">학습할 자료 유형을 선택하세요</div>
+
+    <div class="menu-grid">
+      <button class="menu-btn" type="button" data-category="sermon">
+        <span class="menu-emoji">🎙️</span>
+        <span class="menu-label">설교</span>
+        <span class="menu-desc">제목에 20xxxxxx 날짜가 들어간 시트</span>
+        <span class="menu-count" id="sermonCount">0개</span>
+      </button>
+
+      <button class="menu-btn" type="button" data-category="book">
+        <span class="menu-emoji">📚</span>
+        <span class="menu-label">도서</span>
+        <span class="menu-desc">제목에 (도서)가 들어간 시트</span>
+        <span class="menu-count" id="bookCount">0개</span>
+      </button>
+
+      <button class="menu-btn" type="button" data-category="term">
+        <span class="menu-emoji">🧾</span>
+        <span class="menu-label">용어</span>
+        <span class="menu-desc">제목에 용어가 들어간 시트</span>
+        <span class="menu-count" id="termCount">0개</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 카테고리 진입 후: 해당 시트 목록 -->
+  <div id="sheetListArea" class="home-body" style="display:none;">
+    <div class="category-heading" id="categoryHeading">설교</div>
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
       <input id="searchInput" type="text" placeholder="시트 이름 검색...">
@@ -524,12 +662,13 @@ html, body {
 <!-- ============================================================ LEARN ============================================================ -->
 <div id="screen-learn" class="screen">
   <div class="top-bar">
-    <button class="home-btn" id="learnGoHome" aria-label="홈으로">🏠</button>
-    <div class="title" id="learnTitle">Sheet1 — 1번</div>
+    <button class="home-btn" id="learnGoHome" aria-label="메인메뉴로">🏠</button>
+    <button class="main-menu-link" id="learnMainMenuBtn" type="button">메인메뉴</button>
     <div style="width:40px"></div>
   </div>
 
   <div class="learn-body">
+    <div class="learn-sheet-heading" id="learnTitle">Sheet1 — 1번</div>
 
     <!-- 문제 카드 -->
     <div class="card" id="questionCard">
@@ -584,7 +723,7 @@ html, body {
 <!-- ============================================================ FAVORITE ============================================================ -->
 <div id="screen-favorite" class="screen">
   <div class="top-bar">
-    <button class="home-btn" onclick="showScreen('home')">🏠</button>
+    <button class="home-btn" onclick="showMainMenu()">🏠</button>
     <div class="title">즐겨찾기</div>
     <div style="width:40px"></div>
   </div>
@@ -595,7 +734,7 @@ html, body {
 <!-- ============================================================ SAVED ============================================================ -->
 <div id="screen-saved" class="screen">
   <div class="top-bar">
-    <button class="home-btn" onclick="showScreen('home')">🏠</button>
+    <button class="home-btn" onclick="showMainMenu()">🏠</button>
     <div class="title">북마크 — 카드를 누르면 이동</div>
     <div style="width:40px"></div>
   </div>
@@ -625,6 +764,30 @@ const SHEET_NAMES = [
   '그리스도인의 전도생활 20250323',
   '용어'
 ];
+
+
+
+// 카테고리 분류 규칙
+// - 설교: 제목 안에 20xxxxxx 형식의 날짜가 들어간 시트
+// - 도서: 제목 안에 (도서)가 들어간 시트
+// - 용어: 제목 안에 용어가 들어간 시트
+const CATEGORY_CONFIG = {
+  sermon: {
+    label: '설교',
+    countId: 'sermonCount',
+    test: name => /20\d{6}/.test(name)
+  },
+  book: {
+    label: '도서',
+    countId: 'bookCount',
+    test: name => name.includes('(도서)')
+  },
+  term: {
+    label: '용어',
+    countId: 'termCount',
+    test: name => name.includes('용어')
+  }
+};
 
 const DEFAULT_SHEET = '그리스도인의 교제생활 20250316';
 const sheetCache = new Map();
@@ -761,8 +924,10 @@ async function getFavoriteSentences(numbers) {
   return result;
 }
 
-/* ═══════════ HOME ═══════════ */
+/* ═══════════ HOME / MAIN MENU ═══════════ */
 let allSheets = [];
+let currentCategoryKey = null;
+let currentCategorySheets = [];
 
 (function initHome() {
   allSheets = [...SHEET_NAMES];
@@ -772,19 +937,63 @@ let allSheets = [];
     if (b === DEFAULT_SHEET) return 1;
     return 0;
   });
-  renderSheetGrid(allSheets);
+
+  updateCategoryCounts();
+  showMainMenu();
 })();
+
+document.getElementById('topMainMenuBtn').onclick = showMainMenu;
+
+document.querySelectorAll('.menu-btn[data-category]').forEach(btn => {
+  btn.addEventListener('click', () => openCategory(btn.dataset.category));
+});
 
 document.getElementById('searchInput').addEventListener('input', e => {
   const q = e.target.value.trim();
-  renderSheetGrid(q ? allSheets.filter(n => n.includes(q)) : allSheets);
+  const base = currentCategorySheets;
+  renderSheetGrid(q ? base.filter(n => n.includes(q)) : base);
 });
+
+function updateCategoryCounts() {
+  Object.entries(CATEGORY_CONFIG).forEach(([key, config]) => {
+    const count = allSheets.filter(config.test).length;
+    const el = document.getElementById(config.countId);
+    if (el) el.textContent = `${count}개`;
+  });
+}
+
+function showMainMenu() {
+  currentCategoryKey = null;
+  currentCategorySheets = [];
+  document.getElementById('mainMenuArea').style.display = 'block';
+  document.getElementById('sheetListArea').style.display = 'none';
+  document.getElementById('searchInput').value = '';
+  showScreen('home');
+}
+
+function openCategory(categoryKey) {
+  const config = CATEGORY_CONFIG[categoryKey];
+  if (!config) return;
+
+  currentCategoryKey = categoryKey;
+  currentCategorySheets = allSheets.filter(config.test);
+
+  document.getElementById('categoryHeading').textContent = config.label;
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchInput').placeholder = `${config.label} 시트 이름 검색...`;
+  document.getElementById('mainMenuArea').style.display = 'none';
+  document.getElementById('sheetListArea').style.display = 'block';
+
+  renderSheetGrid(currentCategorySheets);
+  showScreen('home');
+}
 
 function renderSheetGrid(list) {
   const grid = document.getElementById('sheetGrid');
   grid.innerHTML = '';
   if (!list.length) {
-    grid.innerHTML = '<p style="color:var(--muted);font-size:1rem;text-align:center;padding:40px 0;">결과 없음</p>';
+    const label = currentCategoryKey ? CATEGORY_CONFIG[currentCategoryKey].label : '시트';
+    grid.innerHTML = `<p style="color:var(--muted);font-size:1rem;text-align:center;padding:40px 0;">${label} 결과 없음</p>`;
     return;
   }
   list.forEach(name => {
@@ -918,7 +1127,8 @@ document.getElementById('showAnswerBtn').onclick = () => {
 };
 
 /* 홈 버튼 */
-document.getElementById('learnGoHome').onclick = () => showScreen('home');
+document.getElementById('learnGoHome').onclick = showMainMenu;
+document.getElementById('learnMainMenuBtn').onclick = showMainMenu;
 
 /* TTS */
 function speak(text, lang) {
