@@ -854,6 +854,50 @@ html[data-theme="dark"] .fav-del:hover { background: rgba(127,29,29,.26); border
   .icon-mark { width: 40px; height: 40px; }
 }
 
+
+/* Final navigation layout fix: keep 이전/다음 together on the lower row */
+.nav-panel {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  padding: 12px !important;
+}
+.nav-panel .controls-center {
+  order: 1;
+  width: 100%;
+  flex: 0 0 auto;
+}
+.nav-arrows {
+  order: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+.nav-arrows .nav-arrow {
+  flex: 0 0 auto;
+}
+@media (min-width: 861px) {
+  .nav-panel {
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+@media (max-width: 640px) {
+  .nav-panel {
+    gap: 10px !important;
+    padding: 12px !important;
+  }
+  .nav-arrows .nav-arrow {
+    width: 44px;
+    height: 44px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -959,14 +1003,16 @@ html[data-theme="dark"] .fav-del:hover { background: rgba(127,29,29,.26); border
 <input id="progressSlider" max="1" min="1" type="range" value="1"/>
 </div>
 <div class="nav-panel">
-<button aria-label="이전" class="nav-arrow" id="learnPrev"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m15 18-6-6 6-6"></path></svg></button>
 <div class="controls-center">
 <button aria-label="단어장에 저장" class="icon-mark" id="learnBookmark" title="단어장" type="button"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"></path></svg></button>
 <button class="ctrl-btn" id="learnSwitch">KO ↔ VI</button>
 <button class="ctrl-btn" id="answerToggleBtn">정답 항상 끄기</button>
 <button aria-label="북마크" class="icon-mark" id="learnSaveIcon" title="북마크" type="button"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"></path></svg></button>
 </div>
-<button aria-label="다음" class="nav-arrow" id="learnNext"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m9 18 6-6-6-6"></path></svg></button>
+<div class="nav-arrows">
+<button aria-label="이전" class="nav-arrow" id="learnPrev" type="button"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m15 18-6-6 6-6"></path></svg></button>
+<button aria-label="다음" class="nav-arrow" id="learnNext" type="button"><svg class="svg-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m9 18 6-6-6-6"></path></svg></button>
+</div>
 </div>
 <button class="show-answer-btn" id="showAnswerBtn">정답 보기 / 숨기기</button>
 </div>
