@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>통번역 연습</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --accent: #10b981;
+  --accent-2: #059669;
+  --accent-soft: #ecfdf5;
+
+  --bg: #f6fbf8;
+  --bg-2: #eefaf3;
+  --surface: rgba(255, 255, 255, 0.88);
+  --surface-solid: #ffffff;
+  --surface-soft: #f8fafc;
+
+  --text: #0f172a;
+  --text-2: #1e293b;
+  --muted: #64748b;
+  --line: #e2e8f0;
+
+  --danger: #dc2626;
+  --danger-soft: #fef2f2;
+
+  --shadow-sm: 0 8px 24px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 18px 42px rgba(15, 23, 42, 0.10);
+  --shadow-lg: 0 28px 64px rgba(15, 23, 42, 0.14);
+
+  --radius-sm: 14px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+}
+
+html[data-theme="dark"] {
+  --accent: #34d399;
+  --accent-2: #10b981;
+  --accent-soft: rgba(16, 185, 129, 0.14);
+
+  --bg: #020617;
+  --bg-2: #0f172a;
+  --surface: rgba(15, 23, 42, 0.82);
+  --surface-solid: #111827;
+  --surface-soft: #1e293b;
+
+  --text: #f8fafc;
+  --text-2: #e2e8f0;
+  --muted: #94a3b8;
+  --line: rgba(148, 163, 184, 0.24);
+
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.12);
+
+  --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.20);
+  --shadow-md: 0 18px 42px rgba(0, 0, 0, 0.30);
+  --shadow-lg: 0 28px 64px rgba(0, 0, 0, 0.40);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text-2);
+  background:
+    radial-gradient(circle at top left, rgba(16,185,129,.18), transparent 30%),
+    radial-gradient(circle at top right, rgba(14,165,233,.10), transparent 24%),
+    linear-gradient(180deg, var(--bg), var(--bg-2));
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+svg {
+  width: 1.15em;
+  height: 1.15em;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: 0 0 auto;
+}
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  background: var(--surface);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--line);
+}
+
+.top-center {
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.top-title {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: clamp(1.05rem, 2vw, 1.2rem);
+  font-weight: 800;
+  color: var(--text);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.icon-btn,
+.main-menu-link,
+.home-btn,
+.round-btn,
+.nav-arrow,
+.show-answer-btn,
+.menu-btn,
+.sheet-btn,
+.fav-del {
+  cursor: pointer;
+  border: 1px solid var(--line);
+  color: var(--text);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+}
+
+.icon-btn,
+.main-menu-link,
+.home-btn,
+.round-btn,
+.nav-arrow {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 999px;
+  background: var(--surface-solid);
+  box-shadow: var(--shadow-sm);
+  font-weight: 800;
+}
+
+.icon-btn {
+  padding: 10px 14px;
+  font-size: .9rem;
+}
+
+.theme-btn,
+.home-btn,
+.round-btn,
+.nav-arrow {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+}
+
+.icon-btn:hover,
+.main-menu-link:hover,
+.home-btn:hover,
+.round-btn:hover,
+.nav-arrow:hover,
+.sheet-btn:hover,
+.menu-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(16, 185, 129, .45);
+}
+
+.main-menu-link {
+  padding: 10px 16px;
+  color: var(--accent-2);
+  background: linear-gradient(180deg, var(--surface-solid), var(--accent-soft));
+}
+
+.page {
+  width: min(1040px, calc(100% - 28px));
+  margin: 0 auto;
+}
+
+.menu-body,
+.home-body,
+.learn-body,
+.list-body {
+  width: min(980px, calc(100% - 28px));
+  margin: 0 auto;
+}
+
+.menu-body {
+  padding: 30px 0 56px;
+}
+
+.hero-card,
+.section-card,
+.card,
+.progress-wrap,
+.control-panel,
+.list-panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lg);
+}
+
+.hero-card {
+  border-radius: 30px;
+  padding: clamp(24px, 4vw, 38px);
+}
+
+.menu-title {
+  text-align: center;
+  color: var(--text);
+  font-size: clamp(1.75rem, 4vw, 2.45rem);
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.menu-subtitle {
+  max-width: 660px;
+  margin: 0 auto 26px;
+  text-align: center;
+  color: var(--muted);
+  line-height: 1.65;
+  font-size: 1rem;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.menu-btn {
+  min-height: 188px;
+  padding: 24px 18px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, var(--surface-solid), var(--surface-soft));
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.menu-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 20px;
+  background: var(--accent-soft);
+  color: var(--accent-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-icon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.menu-label {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.menu-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 58px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--accent-2);
+  font-size: .84rem;
+  font-weight: 800;
+  border: 1px solid rgba(16,185,129,.18);
+}
+
+.home-body,
+.list-body {
+  padding: 26px 0 56px;
+}
+
+.section-card,
+.list-panel {
+  border-radius: 28px;
+  padding: clamp(18px, 3vw, 28px);
+}
+
+.category-heading,
+.list-heading {
+  color: var(--text);
+  font-size: clamp(1.3rem, 2.6vw, 1.65rem);
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.search-wrap {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+.search-wrap svg {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  width: 18px;
+  height: 18px;
+}
+
+.search-input {
+  width: 100%;
+  min-height: 52px;
+  padding: 14px 16px 14px 46px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface-solid);
+  color: var(--text);
+  font-size: 1rem;
+  outline: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.search-input:focus {
+  border-color: rgba(16,185,129,.55);
+  box-shadow: 0 0 0 4px rgba(16,185,129,.14), var(--shadow-sm);
+}
+
+.sheet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.sheet-btn {
+  border-radius: 20px;
+  padding: 20px 18px;
+  background: var(--surface-solid);
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: left;
+  box-shadow: var(--shadow-sm);
+}
+
+.learn-body {
+  padding: 22px 0 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.learn-sheet-heading {
+  text-align: center;
+  color: var(--muted);
+  font-size: .94rem;
+  font-weight: 700;
+}
+
+.card {
+  position: relative;
+  min-height: 178px;
+  border-radius: 28px;
+  padding: 34px 26px 30px;
+}
+
+.card-label {
+  position: absolute;
+  top: 0;
+  left: 22px;
+  padding: 7px 12px;
+  border-radius: 0 0 14px 14px;
+  background: var(--accent-2);
+  color: white;
+  font-size: .74rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+
+.card-label.gray {
+  background: #475569;
+}
+
+.card-text {
+  width: 100%;
+  font-size: clamp(1.16rem, 2.6vw, 1.45rem);
+  line-height: 1.75;
+  font-weight: 500;
+  word-break: keep-all;
+  color: var(--text);
+}
+
+.answer-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  border-radius: 28px;
+  background: var(--surface-solid);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.answer-cover.hide {
+  display: none;
+}
+
+.tts-btn {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+}
+
+.progress-wrap {
+  border-radius: 22px;
+  padding: 16px 18px;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: .9rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.progress-track {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #34d399, #10b981);
+  transition: width .24s ease;
+}
+
+#progressSlider {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.control-panel {
+  border-radius: 22px;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.control-center {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pill-btn {
+  min-height: 42px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  font-size: .9rem;
+}
+
+.pill-btn.active {
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  color: white;
+  border-color: transparent;
+}
+
+.show-answer-btn {
+  min-height: 54px;
+  border-radius: 18px;
+  border: 0;
+  color: white;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: var(--shadow-md);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.show-answer-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.list-tools {
+  margin-bottom: 16px;
+}
+
+.empty-state {
+  display: flex;
+  min-height: 160px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.empty-state svg {
+  width: 38px;
+  height: 38px;
+  color: var(--accent-2);
+}
+
+.fav-card {
+  position: relative;
+  padding: 20px 52px 18px 20px;
+  background: var(--surface-solid);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--shadow-sm);
+}
+
+.fav-card + .fav-card {
+  margin-top: 12px;
+}
+
+.fav-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: rgba(16,185,129,.38);
+}
+
+.fav-sheet {
+  color: var(--accent-2);
+  font-size: .78rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.fav-ko {
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.65;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+
+.fav-vi {
+  color: var(--muted);
+  font-size: .95rem;
+  line-height: 1.6;
+}
+
+.fav-del {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fav-del:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-color: rgba(220, 38, 38, .25);
+}
+
+#loadingOverlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 999;
+  background: rgba(255,255,255,.68);
+  backdrop-filter: blur(10px);
+  color: var(--muted);
+  font-weight: 800;
+}
+
+html[data-theme="dark"] #loadingOverlay {
+  background: rgba(2,6,23,.68);
+}
+
+#loadingOverlay.show {
+  display: flex;
+}
+
+.spinner {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 3px solid rgba(16,185,129,.18);
+  border-top-color: var(--accent);
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-box {
+  color: var(--danger);
+  font-size: 1rem;
+  line-height: 1.65;
+  padding: 18px;
+  background: var(--surface-solid);
+  border: 1px solid rgba(220,38,38,.28);
+  border-radius: 18px;
+}
+
+.icon-only-label {
+  display: inline;
+}
+
+@media (max-width: 860px) {
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .control-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-row-mobile {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .control-center {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .top-bar {
+    min-height: 66px;
+    padding: 11px 10px;
+    gap: 8px;
+  }
+
+  .icon-btn {
+    padding: 9px 11px;
+  }
+
+  .icon-only-label {
+    display: none;
+  }
+
+  .menu-body,
+  .home-body,
+  .learn-body,
+  .list-body {
+    width: min(100%, calc(100% - 18px));
+  }
+
+  .hero-card,
+  .section-card,
+  .card,
+  .progress-wrap,
+  .control-panel,
+  .list-panel {
+    border-radius: 22px;
+  }
+
+  .card {
+    min-height: 160px;
+    padding: 30px 20px 24px;
+  }
+
+  .answer-cover {
+    border-radius: 22px;
+  }
+
+  .card-text {
+    font-size: 1.14rem;
+  }
+
+  .sheet-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+  <symbol id="i-home" viewBox="0 0 24 24">
+    <path d="M3 11.5 12 4l9 7.5"></path>
+    <path d="M5 10.5V20h14v-9.5"></path>
+    <path d="M9 20v-6h6v6"></path>
+  </symbol>
+
+  <symbol id="i-book" viewBox="0 0 24 24">
+    <path d="M5 4h10a4 4 0 0 1 4 4v12H8a3 3 0 0 1-3-3z"></path>
+    <path d="M5 17a3 3 0 0 1 3-3h11"></path>
+  </symbol>
+
+  <symbol id="i-book-filled" viewBox="0 0 24 24">
+    <path d="M5 4h10a4 4 0 0 1 4 4v12H8a3 3 0 0 1-3-3z" fill="currentColor" stroke="none"></path>
+    <path d="M5 17a3 3 0 0 1 3-3h11" stroke="white"></path>
+  </symbol>
+
+  <symbol id="i-bookmark" viewBox="0 0 24 24">
+    <path d="M7 4h10v16l-5-3-5 3z"></path>
+  </symbol>
+
+  <symbol id="i-bookmark-filled" viewBox="0 0 24 24">
+    <path d="M7 4h10v16l-5-3-5 3z" fill="currentColor" stroke="none"></path>
+  </symbol>
+
+  <symbol id="i-mic" viewBox="0 0 24 24">
+    <rect x="9" y="3" width="6" height="11" rx="3"></rect>
+    <path d="M5 11a7 7 0 0 0 14 0"></path>
+    <path d="M12 18v3"></path>
+    <path d="M8 21h8"></path>
+  </symbol>
+
+  <symbol id="i-books" viewBox="0 0 24 24">
+    <path d="M4 5h5v15H4z"></path>
+    <path d="M9 5h5v15H9z"></path>
+    <path d="m16 6 4 1-3 13-4-1z"></path>
+  </symbol>
+
+  <symbol id="i-terms" viewBox="0 0 24 24">
+    <path d="M6 4h12v16H6z"></path>
+    <path d="M9 8h6"></path>
+    <path d="M9 12h6"></path>
+    <path d="M9 16h4"></path>
+  </symbol>
+
+  <symbol id="i-search" viewBox="0 0 24 24">
+    <circle cx="11" cy="11" r="7"></circle>
+    <path d="m16.5 16.5 4 4"></path>
+  </symbol>
+
+  <symbol id="i-moon" viewBox="0 0 24 24">
+    <path d="M21 14.8A8.5 8.5 0 0 1 9.2 3 8.5 8.5 0 1 0 21 14.8z"></path>
+  </symbol>
+
+  <symbol id="i-sun" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2"></path>
+    <path d="M12 20v2"></path>
+    <path d="M4.93 4.93l1.41 1.41"></path>
+    <path d="M17.66 17.66l1.41 1.41"></path>
+    <path d="M2 12h2"></path>
+    <path d="M20 12h2"></path>
+    <path d="M4.93 19.07l1.41-1.41"></path>
+    <path d="M17.66 6.34l1.41-1.41"></path>
+  </symbol>
+
+  <symbol id="i-volume" viewBox="0 0 24 24">
+    <path d="M4 9v6h4l5 4V5L8 9z"></path>
+    <path d="M16 9.5a4 4 0 0 1 0 5"></path>
+    <path d="M18.5 7a7 7 0 0 1 0 10"></path>
+  </symbol>
+
+  <symbol id="i-left" viewBox="0 0 24 24">
+    <path d="m15 18-6-6 6-6"></path>
+  </symbol>
+
+  <symbol id="i-right" viewBox="0 0 24 24">
+    <path d="m9 18 6-6-6-6"></path>
+  </symbol>
+
+  <symbol id="i-eye" viewBox="0 0 24 24">
+    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path>
+    <circle cx="12" cy="12" r="3"></circle>
+  </symbol>
+
+  <symbol id="i-x" viewBox="0 0 24 24">
+    <path d="M6 6l12 12"></path>
+    <path d="M18 6 6 18"></path>
+  </symbol>
+
+  <symbol id="i-alert" viewBox="0 0 24 24">
+    <path d="M12 3 2 21h20z"></path>
+    <path d="M12 9v5"></path>
+    <path d="M12 17h.01"></path>
+  </symbol>
+</svg>
+
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+  <span>불러오는 중...</span>
+</div>
+
+<div id="screen-home" class="screen active">
+  <div class="top-bar">
+    <button class="icon-btn" id="goFavorite" type="button">
+      <svg><use href="#i-book"></use></svg>
+      <span class="icon-only-label">단어장</span>
+    </button>
+
+    <div class="top-center">
+      <div class="top-title" id="topAppTitle">통번역 연습</div>
+      <button class="main-menu-link" id="topMainMenuBtn" type="button" style="display:none;">메인메뉴</button>
+    </div>
+
+    <div style="display:flex;gap:8px;">
+      <button class="round-btn theme-btn" id="themeToggle" type="button" aria-label="다크모드">
+        <svg id="themeIcon"><use href="#i-moon"></use></svg>
+      </button>
+      <button class="icon-btn" id="goSaved" type="button">
+        <svg><use href="#i-bookmark"></use></svg>
+        <span class="icon-only-label">북마크</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="mainMenuArea" class="menu-body">
+    <div class="hero-card">
+      <div class="menu-title">메인메뉴</div>
+      <div class="menu-subtitle">자료 유형을 선택해 문장 단위로 통번역을 연습하세요.</div>
+
+      <div class="menu-grid">
+        <button class="menu-btn" type="button" data-category="sermon">
+          <span class="menu-icon"><svg><use href="#i-mic"></use></svg></span>
+          <span class="menu-label">설교</span>
+          <span class="menu-count" id="sermonCount">0개</span>
+        </button>
+
+        <button class="menu-btn" type="button" data-category="book">
+          <span class="menu-icon"><svg><use href="#i-books"></use></svg></span>
+          <span class="menu-label">도서</span>
+          <span class="menu-count" id="bookCount">0개</span>
+        </button>
+
+        <button class="menu-btn" type="button" data-category="term">
+          <span class="menu-icon"><svg><use href="#i-terms"></use></svg></span>
+          <span class="menu-label">용어</span>
+          <span class="menu-count" id="termCount">0개</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="sheetListArea" class="home-body" style="display:none;">
+    <div class="section-card">
+      <div class="category-heading" id="categoryHeading">설교</div>
+
+      <div class="search-wrap">
+        <svg><use href="#i-search"></use></svg>
+        <input id="searchInput" class="search-input" type="text" placeholder="시트 이름 검색..." />
+      </div>
+
+      <div id="sheetGrid" class="sheet-grid"></div>
+    </div>
+  </div>
+</div>
+
+<div id="screen-learn" class="screen">
+  <div class="top-bar">
+    <button class="home-btn" id="learnGoHome" type="button" aria-label="홈">
+      <svg><use href="#i-home"></use></svg>
+    </button>
+
+    <div class="top-center">
+      <button class="main-menu-link" id="learnMainMenuBtn" type="button">메인메뉴</button>
+    </div>
+
+    <div style="width:44px;"></div>
+  </div>
+
+  <div class="learn-body">
+    <div class="learn-sheet-heading" id="learnTitle">시트 — 1번</div>
+
+    <div class="card">
+      <div class="card-label" id="questionLabel">문제</div>
+      <div class="card-text" id="learnQuestion"></div>
+      <button class="round-btn tts-btn" id="learnTTS" type="button" aria-label="문제 읽기">
+        <svg><use href="#i-volume"></use></svg>
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-label gray" id="answerLabel">정답</div>
+      <div id="answerCover" class="answer-cover">
+        <svg><use href="#i-eye"></use></svg>
+        통역하여 말해보세요
+      </div>
+      <div class="card-text" id="learnAnswer"></div>
+      <button class="round-btn tts-btn" id="learnTTSAnswer" type="button" aria-label="정답 읽기">
+        <svg><use href="#i-volume"></use></svg>
+      </button>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span id="progressText">1 / 1</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <input type="range" id="progressSlider" min="1" max="1" value="1" />
+    </div>
+
+    <div class="control-panel">
+      <div class="nav-row-mobile">
+        <button class="nav-arrow" id="learnPrev" type="button" aria-label="이전">
+          <svg><use href="#i-left"></use></svg>
+        </button>
+      </div>
+
+      <div class="control-center">
+        <button class="round-btn" id="learnBookmark" type="button" title="단어장">
+          <svg><use href="#i-book"></use></svg>
+        </button>
+        <button class="icon-btn pill-btn" id="learnSwitch" type="button">KO ↔ VI</button>
+        <button class="icon-btn pill-btn" id="answerToggleBtn" type="button">정답 항상 끄기</button>
+        <button class="round-btn" id="learnSaveIcon" type="button" title="북마크">
+          <svg><use href="#i-bookmark"></use></svg>
+        </button>
+      </div>
+
+      <div class="nav-row-mobile">
+        <button class="nav-arrow" id="learnNext" type="button" aria-label="다음">
+          <svg><use href="#i-right"></use></svg>
+        </button>
+      </div>
+    </div>
+
+    <button class="show-answer-btn" id="showAnswerBtn" type="button">정답 보기 / 숨기기</button>
+  </div>
+</div>
+
+<div id="screen-favorite" class="screen">
+  <div class="top-bar">
+    <button class="home-btn" onclick="showMainMenu()" type="button" aria-label="홈">
+      <svg><use href="#i-home"></use></svg>
+    </button>
+
+    <div class="top-center">
+      <div class="top-title">단어장</div>
+    </div>
+
+    <div style="width:44px;"></div>
+  </div>
+
+  <div class="list-body">
+    <div class="list-panel">
+      <div class="list-tools">
+        <div class="search-wrap">
+          <svg><use href="#i-search"></use></svg>
+          <input id="favoriteSearch" class="search-input" type="text" placeholder="단어장 검색..." />
+        </div>
+      </div>
+      <div id="favoriteList"></div>
+    </div>
+  </div>
+</div>
+
+<div id="screen-saved" class="screen">
+  <div class="top-bar">
+    <button class="home-btn" onclick="showMainMenu()" type="button" aria-label="홈">
+      <svg><use href="#i-home"></use></svg>
+    </button>
+
+    <div class="top-center">
+      <div class="top-title">북마크</div>
+    </div>
+
+    <div style="width:44px;"></div>
+  </div>
+
+  <div class="list-body">
+    <div class="list-panel">
+      <div class="list-tools">
+        <div class="search-wrap">
+          <svg><use href="#i-search"></use></svg>
+          <input id="savedSearch" class="search-input" type="text" placeholder="북마크 검색..." />
+        </div>
+      </div>
+      <div id="savedList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SPREADSHEET_ID = '1Pg2C4O6owsc89RcX7RN_mZ1c_htMZb2SI1b6ZdTh1Bg';
+const GOOGLE_SHEETS_API_KEY = 'AIzaSyC-OVbR7yvIm0KoY-8zSOt6ENAyxDH4_5k';
+
+const CATEGORY_CONFIG = {
+  sermon: {
+    label: '설교',
+    countId: 'sermonCount',
+    test: name => /20\d{6}/.test(name)
+  },
+  book: {
+    label: '도서',
+    countId: 'bookCount',
+    test: name => name.includes('(도서)')
+  },
+  term: {
+    label: '용어',
+    countId: 'termCount',
+    test: name => name.includes('용어')
+  }
+};
+
+const sheetCache = new Map();
+
+let allSheets = [];
+let currentCategoryKey = null;
+let currentCategorySheets = [];
+let currentSheet = '';
+let currentSentences = [];
+let currentIndex = 0;
+let learnMode = 'KR_TO_VI';
+let alwaysShowAnswer = false;
+let currentFavoriteItems = [];
+let currentSavedItems = [];
+
+let bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '{}');
+let savedPages = JSON.parse(localStorage.getItem('savedPages') || '[]');
+
+const overlay = document.getElementById('loadingOverlay');
+const cover = document.getElementById('answerCover');
+const toggleBtn = document.getElementById('answerToggleBtn');
+
+function svg(name) {
+  return `<svg><use href="#i-${name}"></use></svg>`;
+}
+
+function setLoading(on) {
+  overlay.classList.toggle('show', on);
+}
+
+function initTheme() {
+  const saved = localStorage.getItem('theme') || 'light';
+  document.documentElement.dataset.theme = saved;
+  updateThemeIcon();
+}
+
+function updateThemeIcon() {
+  const isDark = document.documentElement.dataset.theme === 'dark';
+  document.getElementById('themeIcon').innerHTML = `<use href="#i-${isDark ? 'sun' : 'moon'}"></use>`;
+}
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem('theme', next);
+  updateThemeIcon();
+});
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function emptyState(iconName, text) {
+  return `<div class="empty-state">${svg(iconName)}<div>${text}</div></div>`;
+}
+
+function parseDateFromName(name) {
+  const match = String(name).match(/(20\d{6})/);
+  return match ? Number(match[1]) : null;
+}
+
+function sortSheetsForCategory(categoryKey, sheets) {
+  const list = [...sheets];
+
+  if (categoryKey === 'sermon') {
+    return list.sort((a, b) => {
+      const dateA = parseDateFromName(a) ?? Number.MAX_SAFE_INTEGER;
+      const dateB = parseDateFromName(b) ?? Number.MAX_SAFE_INTEGER;
+
+      if (dateA !== dateB) return dateA - dateB;
+      return a.localeCompare(b, 'ko');
+    });
+  }
+
+  return list.sort((a, b) => a.localeCompare(b, 'ko'));
+}
+
+async function fetchSheetNames() {
+  const fields = 'sheets(properties(title))';
+  const url =
+    `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(SPREADSHEET_ID)}` +
+    `?fields=${encodeURIComponent(fields)}` +
+    `&key=${encodeURIComponent(GOOGLE_SHEETS_API_KEY)}`;
+
+  const response = await fetch(url);
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok || data?.error) {
+    throw new Error(data?.error?.message || '구글시트 탭 목록을 불러오지 못했습니다.');
+  }
+
+  const names = (data.sheets || [])
+    .map(sheet => sheet?.properties?.title)
+    .filter(Boolean);
+
+  if (!names.length) {
+    throw new Error('구글시트에서 탭 이름을 찾지 못했습니다.');
+  }
+
+  return names;
+}
+
+function updateCategoryCounts() {
+  Object.entries(CATEGORY_CONFIG).forEach(([key, config]) => {
+    const count = allSheets.filter(config.test).length;
+    document.getElementById(config.countId).textContent = `${count}개`;
+  });
+}
+
+async function initHome() {
+  setLoading(true);
+
+  try {
+    allSheets = await fetchSheetNames();
+    allSheets.sort((a, b) => a.localeCompare(b, 'ko'));
+    updateCategoryCounts();
+    showMainMenu();
+  } catch (e) {
+    console.error(e);
+    allSheets = [];
+    updateCategoryCounts();
+    showMainMenu();
+
+    alert(
+      `구글시트 탭 목록을 불러오지 못했습니다.\n\n${e.message}\n\n` +
+      `API 키 제한, Google Sheets API 활성화, 스프레드시트 공유 권한을 확인하세요.`
+    );
+  } finally {
+    setLoading(false);
+  }
+}
+
+function showMainMenu() {
+  currentCategoryKey = null;
+  currentCategorySheets = [];
+
+  document.getElementById('mainMenuArea').style.display = 'block';
+  document.getElementById('sheetListArea').style.display = 'none';
+  document.getElementById('searchInput').value = '';
+
+  document.getElementById('topAppTitle').style.display = 'inline-flex';
+  document.getElementById('topMainMenuBtn').style.display = 'none';
+
+  showScreen('home');
+}
+
+function openCategory(categoryKey) {
+  const config = CATEGORY_CONFIG[categoryKey];
+  if (!config) return;
+
+  currentCategoryKey = categoryKey;
+  currentCategorySheets = sortSheetsForCategory(categoryKey, allSheets.filter(config.test));
+
+  document.getElementById('categoryHeading').textContent = config.label;
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchInput').placeholder = `${config.label} 시트 이름 검색...`;
+
+  document.getElementById('mainMenuArea').style.display = 'none';
+  document.getElementById('sheetListArea').style.display = 'block';
+  document.getElementById('topAppTitle').style.display = 'none';
+  document.getElementById('topMainMenuBtn').style.display = 'inline-flex';
+
+  renderSheetGrid(currentCategorySheets);
+  showScreen('home');
+}
+
+function renderSheetGrid(list) {
+  const grid = document.getElementById('sheetGrid');
+  grid.innerHTML = '';
+
+  if (!list.length) {
+    const label = currentCategoryKey ? CATEGORY_CONFIG[currentCategoryKey].label : '시트';
+    grid.innerHTML = emptyState('terms', `${label} 결과가 없습니다`);
+    return;
+  }
+
+  list.forEach(name => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'sheet-btn';
+    button.textContent = name;
+    button.onclick = () => {
+      showScreen('learn');
+      loadLearnSheet(name);
+    };
+    grid.appendChild(button);
+  });
+}
+
+function loadGvizTable(sheetName) {
+  if (sheetCache.has(sheetName)) return Promise.resolve(sheetCache.get(sheetName));
+
+  return new Promise((resolve, reject) => {
+    const callbackName =
+      '__gvizCallback_' +
+      Date.now() +
+      '_' +
+      Math.random().toString(36).slice(2);
+
+    const script = document.createElement('script');
+
+    const timeout = setTimeout(() => {
+      cleanup();
+      reject(new Error('Google Sheets 응답 시간이 초과되었습니다.'));
+    }, 15000);
+
+    function cleanup() {
+      clearTimeout(timeout);
+      delete window[callbackName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    window[callbackName] = response => {
+      cleanup();
+
+      if (!response || response.status === 'error') {
+        const detail =
+          response?.errors?.map(e => e.detailed_message || e.message).join('\n') ||
+          '알 수 없는 오류';
+        reject(new Error(detail));
+        return;
+      }
+
+      const values = gvizToValues(response.table);
+      sheetCache.set(sheetName, values);
+      resolve(values);
+    };
+
+    const tqx = `out:json;responseHandler:${callbackName}`;
+    const url =
+      `https://docs.google.com/spreadsheets/d/${encodeURIComponent(SPREADSHEET_ID)}/gviz/tq` +
+      `?sheet=${encodeURIComponent(sheetName)}` +
+      `&tqx=${encodeURIComponent(tqx)}`;
+
+    script.src = url;
+
+    script.onerror = () => {
+      cleanup();
+      reject(new Error('Google Sheets 스크립트를 불러오지 못했습니다. 시트 공유 설정을 확인하세요.'));
+    };
+
+    document.head.appendChild(script);
+  });
+}
+
+function cellValue(cell) {
+  if (!cell) return '';
+  if (cell.f !== undefined && cell.f !== null) return String(cell.f).trim();
+  if (cell.v !== undefined && cell.v !== null) return String(cell.v).trim();
+  return '';
+}
+
+function gvizToValues(table) {
+  if (!table || !Array.isArray(table.rows)) return [];
+
+  const labels = (table.cols || []).map(col => String(col.label || '').trim());
+  const rows = table.rows.map(row => (row.c || []).map(cellValue));
+
+  if (isHeaderRow(labels)) return [labels, ...rows];
+  return rows;
+}
+
+function isHeaderRow(row) {
+  const joined = (row || [])
+    .map(v => String(v || '').trim().toLowerCase())
+    .join('|');
+
+  return /번호|number|no\.?|순번|korean|한국|한글|ko|kr|vietnamese|베트남|vi|vn/.test(joined);
+}
+
+function findColumnIndex(headers, candidates, fallback) {
+  const lower = headers.map(h => String(h || '').trim().toLowerCase());
+  const idx = lower.findIndex(h => candidates.some(c => h.includes(c)));
+  return idx >= 0 ? idx : fallback;
+}
+
+function normalizeSentences(values) {
+  if (!Array.isArray(values) || values.length === 0) return [];
+
+  const rows = values.filter(row =>
+    Array.isArray(row) && row.some(cell => String(cell || '').trim() !== '')
+  );
+
+  if (!rows.length) return [];
+
+  const hasHeader = isHeaderRow(rows[0]);
+  const headers = hasHeader ? rows[0] : [];
+  const dataRows = hasHeader ? rows.slice(1) : rows;
+
+  const numberIndex = hasHeader ? findColumnIndex(headers, ['번호', 'number', 'no', '순번'], 0) : 0;
+  const koreanIndex = hasHeader ? findColumnIndex(headers, ['korean', '한국', '한글', 'ko', 'kr'], 1) : 1;
+  const vietnameseIndex = hasHeader ? findColumnIndex(headers, ['vietnamese', '베트남', 'vi', 'vn'], 2) : 2;
+
+  return dataRows
+    .map((row, index) => {
+      const number = String(row[numberIndex] ?? index + 1).trim();
+      const korean = String(row[koreanIndex] ?? '').trim();
+      const vietnamese = String(row[vietnameseIndex] ?? '').trim();
+      return { number, korean, vietnamese };
+    })
+    .filter(item => item.korean || item.vietnamese);
+}
+
+async function getSentences(sheetName) {
+  const values = await loadGvizTable(sheetName);
+  return normalizeSentences(values);
+}
+
+async function loadLearnSheet(sheetName, targetNumber = null) {
+  setLoading(true);
+  currentSheet = sheetName;
+
+  try {
+    currentSentences = await getSentences(sheetName);
+
+    if (!currentSentences.length) {
+      alert('이 시트에서 읽을 문장을 찾지 못했습니다. A열=번호, B열=한글, C열=베트남어 형식인지 확인하세요.');
+      return;
+    }
+
+    if (targetNumber !== null) {
+      const idx = currentSentences.findIndex(s => String(s.number) === String(targetNumber));
+      currentIndex = idx >= 0 ? idx : 0;
+    } else {
+      currentIndex = 0;
+    }
+
+    renderLearn();
+  } catch (e) {
+    console.error(e);
+    alert(
+      `Google Sheet를 불러오지 못했습니다.\n\n${e.message}\n\n` +
+      `확인: 시트 공유가 '링크가 있는 모든 사용자 → 뷰어'인지 확인하세요.`
+    );
+  } finally {
+    setLoading(false);
+  }
+}
+
+function bookmarkKey(sheetName, number) {
+  return `${sheetName}::${number}`;
+}
+
+function isBookmarked(item) {
+  return Boolean(bookmarks[bookmarkKey(currentSheet, item.number)] || bookmarks[item.number]);
+}
+
+function isSavedPage(item) {
+  return savedPages.some(
+    p => p.sheet === currentSheet && String(p.number) === String(item.number)
+  );
+}
+
+function renderLearn() {
+  const item = currentSentences[currentIndex];
+  if (!item) return;
+
+  const total = currentSentences.length;
+  const pos = currentIndex + 1;
+  const pct = Math.round((pos / total) * 100);
+
+  document.getElementById('learnTitle').textContent = `${currentSheet} — ${item.number}번`;
+
+  document.getElementById('learnBookmark').innerHTML =
+    svg(isBookmarked(item) ? 'book-filled' : 'book');
+
+  document.getElementById('learnSaveIcon').innerHTML =
+    svg(isSavedPage(item) ? 'bookmark-filled' : 'bookmark');
+
+  const q = learnMode === 'KR_TO_VI' ? item.korean : item.vietnamese;
+  const a = learnMode === 'KR_TO_VI' ? item.vietnamese : item.korean;
+
+  document.getElementById('learnQuestion').textContent = q;
+  document.getElementById('learnAnswer').textContent = a;
+
+  document.getElementById('questionLabel').textContent =
+    learnMode === 'KR_TO_VI' ? 'KO 한국어' : 'VI 베트남어';
+
+  document.getElementById('answerLabel').textContent =
+    learnMode === 'KR_TO_VI' ? 'VI 베트남어' : 'KO 한국어';
+
+  document.getElementById('progressText').textContent = `${pos} / ${total}`;
+  document.getElementById('progressPct').textContent = `${pct}%`;
+  document.getElementById('progressFill').style.width = `${pct}%`;
+
+  const slider = document.getElementById('progressSlider');
+  slider.max = total;
+  slider.value = pos;
+
+  cover.classList.toggle('hide', alwaysShowAnswer);
+
+  document.getElementById('learnPrev').disabled = currentIndex === 0;
+  document.getElementById('learnNext').disabled = currentIndex === total - 1;
+
+  toggleBtn.textContent = alwaysShowAnswer ? '정답 항상 켜기' : '정답 항상 끄기';
+  toggleBtn.classList.toggle('active', alwaysShowAnswer);
+}
+
+document.getElementById('learnPrev').onclick = () => {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderLearn();
+  }
+};
+
+document.getElementById('learnNext').onclick = () => {
+  if (currentIndex < currentSentences.length - 1) {
+    currentIndex++;
+    renderLearn();
+  }
+};
+
+document.getElementById('progressSlider').addEventListener('input', e => {
+  const idx = Number(e.target.value) - 1;
+  if (idx >= 0 && idx < currentSentences.length) {
+    currentIndex = idx;
+    renderLearn();
+  }
+});
+
+document.getElementById('learnSwitch').onclick = () => {
+  learnMode = learnMode === 'KR_TO_VI' ? 'VI_TO_KR' : 'KR_TO_VI';
+  renderLearn();
+};
+
+toggleBtn.onclick = () => {
+  alwaysShowAnswer = !alwaysShowAnswer;
+  cover.classList.toggle('hide', alwaysShowAnswer);
+  toggleBtn.textContent = alwaysShowAnswer ? '정답 항상 켜기' : '정답 항상 끄기';
+  toggleBtn.classList.toggle('active', alwaysShowAnswer);
+};
+
+document.getElementById('showAnswerBtn').onclick = () => {
+  cover.classList.toggle('hide');
+};
+
+document.getElementById('learnGoHome').onclick = showMainMenu;
+document.getElementById('learnMainMenuBtn').onclick = showMainMenu;
+
+document.getElementById('learnTTS').onclick = () => {
+  const lang = learnMode === 'KR_TO_VI' ? 'ko-KR' : 'vi-VN';
+  speak(document.getElementById('learnQuestion').textContent, lang);
+};
+
+document.getElementById('learnTTSAnswer').onclick = () => {
+  const lang = learnMode === 'KR_TO_VI' ? 'vi-VN' : 'ko-KR';
+  speak(document.getElementById('learnAnswer').textContent, lang);
+};
+
+function speak(text, lang) {
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = lang;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utterance);
+}
+
+document.getElementById('learnBookmark').onclick = () => {
+  const item = currentSentences[currentIndex];
+  const key = bookmarkKey(currentSheet, item.number);
+
+  if (isBookmarked(item)) {
+    delete bookmarks[key];
+    delete bookmarks[item.number];
+  } else {
+    bookmarks[key] = true;
+  }
+
+  localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+  renderLearn();
+};
+
+document.getElementById('learnSaveIcon').onclick = () => {
+  const item = currentSentences[currentIndex];
+
+  const idx = savedPages.findIndex(
+    p => p.sheet === currentSheet && String(p.number) === String(item.number)
+  );
+
+  if (idx >= 0) {
+    savedPages.splice(idx, 1);
+  } else {
+    savedPages.push({
+      sheet: currentSheet,
+      number: item.number,
+      korean: item.korean
+    });
+  }
+
+  localStorage.setItem('savedPages', JSON.stringify(savedPages));
+  renderLearn();
+};
+
+async function getFavoriteSentences(entries) {
+  const items = [];
+
+  for (const entry of entries) {
+    if (entry.includes('::')) {
+      const [sheet, number] = entry.split('::');
+      const rows = await getSentences(sheet);
+      const found = rows.find(row => String(row.number) === String(number));
+
+      if (found) {
+        items.push({ ...found, sheet });
+      }
+    } else {
+      for (const sheet of allSheets) {
+        try {
+          const rows = await getSentences(sheet);
+          rows.forEach(row => {
+            if (String(row.number) === String(entry)) {
+              items.push({ ...row, sheet });
+            }
+          });
+        } catch (e) {
+          console.warn('단어장 복구 실패:', sheet, e);
+        }
+      }
+    }
+  }
+
+  return items;
+}
+
+document.getElementById('goFavorite').onclick = async () => {
+  showScreen('favorite');
+  setLoading(true);
+
+  const entries = Object.keys(bookmarks);
+
+  if (!entries.length) {
+    currentFavoriteItems = [];
+    document.getElementById('favoriteList').innerHTML =
+      emptyState('book', '단어장에 저장된 문장이 없습니다');
+    setLoading(false);
+    return;
+  }
+
+  try {
+    currentFavoriteItems = await getFavoriteSentences(entries);
+    renderFavorite(filterFavoriteItems());
+  } catch (e) {
+    console.error(e);
+    document.getElementById('favoriteList').innerHTML =
+      `<div class="empty-state">${svg('alert')}<div>단어장을 불러오지 못했습니다<br>${e.message}</div></div>`;
+  } finally {
+    setLoading(false);
+  }
+};
+
+function favoriteMatches(item, q) {
+  if (!q) return true;
+
+  const haystack = [
+    item.sheet,
+    item.number,
+    item.korean,
+    item.vietnamese
+  ].join(' ').toLowerCase();
+
+  return haystack.includes(q.toLowerCase());
+}
+
+function filterFavoriteItems() {
+  const q = document.getElementById('favoriteSearch').value.trim();
+  return currentFavoriteItems.filter(item => favoriteMatches(item, q));
+}
+
+function renderFavorite(items) {
+  const box = document.getElementById('favoriteList');
+  box.innerHTML = '';
+
+  if (!items.length) {
+    box.innerHTML = emptyState(
+      'book',
+      currentFavoriteItems.length ? '검색 결과가 없습니다' : '단어장에 저장된 문장이 없습니다'
+    );
+    return;
+  }
+
+  items.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'fav-card';
+
+    card.innerHTML = `
+      <div class="fav-sheet">[${escapeHtml(item.sheet)}] ${escapeHtml(item.number)}번</div>
+      <div class="fav-ko">${escapeHtml(item.korean)}</div>
+      <div class="fav-vi">${escapeHtml(item.vietnamese)}</div>
+    `;
+
+    const del = document.createElement('button');
+    del.className = 'fav-del';
+    del.type = 'button';
+    del.innerHTML = svg('x');
+
+    del.onclick = e => {
+      e.stopPropagation();
+
+      delete bookmarks[bookmarkKey(item.sheet, item.number)];
+      delete bookmarks[item.number];
+
+      localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+
+      currentFavoriteItems = currentFavoriteItems.filter(
+        row => !(row.sheet === item.sheet && String(row.number) === String(item.number))
+      );
+
+      renderFavorite(filterFavoriteItems());
+    };
+
+    card.appendChild(del);
+    box.appendChild(card);
+  });
+}
+
+document.getElementById('goSaved').onclick = () => {
+  showScreen('saved');
+  currentSavedItems = [...savedPages];
+  renderSaved(filterSavedItems());
+};
+
+function savedMatches(item, q) {
+  if (!q) return true;
+
+  const haystack = [
+    item.sheet,
+    item.number,
+    item.korean
+  ].join(' ').toLowerCase();
+
+  return haystack.includes(q.toLowerCase());
+}
+
+function filterSavedItems() {
+  const q = document.getElementById('savedSearch').value.trim();
+  return currentSavedItems.filter(item => savedMatches(item, q));
+}
+
+function renderSaved(items) {
+  const box = document.getElementById('savedList');
+  box.innerHTML = '';
+
+  if (!items.length) {
+    box.innerHTML = emptyState(
+      'bookmark',
+      currentSavedItems.length ? '검색 결과가 없습니다' : '저장된 페이지가 없습니다'
+    );
+    return;
+  }
+
+  items.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'fav-card';
+    card.style.cursor = 'pointer';
+
+    card.innerHTML = `
+      <div class="fav-sheet">[${escapeHtml(item.sheet)}] ${escapeHtml(item.number)}번</div>
+      <div class="fav-ko">${escapeHtml(item.korean)}</div>
+    `;
+
+    const del = document.createElement('button');
+    del.className = 'fav-del';
+    del.type = 'button';
+    del.innerHTML = svg('x');
+
+    del.onclick = e => {
+      e.stopPropagation();
+
+      const idx = savedPages.findIndex(
+        p => p.sheet === item.sheet && String(p.number) === String(item.number)
+      );
+
+      if (idx >= 0) savedPages.splice(idx, 1);
+
+      localStorage.setItem('savedPages', JSON.stringify(savedPages));
+
+      currentSavedItems = [...savedPages];
+      renderSaved(filterSavedItems());
+    };
+
+    card.onclick = () => {
+      showScreen('learn');
+      loadLearnSheet(item.sheet, item.number);
+    };
+
+    card.appendChild(del);
+    box.appendChild(card);
+  });
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+document.getElementById('topMainMenuBtn').onclick = showMainMenu;
+
+document.querySelectorAll('.menu-btn[data-category]').forEach(btn => {
+  btn.addEventListener('click', () => openCategory(btn.dataset.category));
+});
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  const q = e.target.value.trim();
+  const base = currentCategorySheets;
+  renderSheetGrid(q ? base.filter(name => name.includes(q)) : base);
+});
+
+document.getElementById('favoriteSearch').addEventListener('input', () => {
+  renderFavorite(filterFavoriteItems());
+});
+
+document.getElementById('savedSearch').addEventListener('input', () => {
+  renderSaved(filterSavedItems());
+});
+
+initTheme();
+initHome();
+</script>
+</body>
+</html>
