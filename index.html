@@ -188,6 +188,20 @@ html, body {
   font-size: 0.78rem;
   font-weight: 800;
 }
+.api-status {
+  display: none;
+  margin: 0 auto 20px;
+  max-width: 720px;
+  padding: 14px 16px;
+  border: 1.5px solid #fecaca;
+  border-radius: 16px;
+  background: #fff7f7;
+  color: #b91c1c;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+.api-status.show { display: block; }
 .category-heading {
   font-size: 1.35rem;
   font-weight: 800;
@@ -606,7 +620,7 @@ html, body {
     <button class="icon-btn" id="goFavorite">
       <span class="em">📘</span> 즐겨찾기
     </button>
-    <div class="title" id="topAppTitle">통번역 연습</div>
+    <div class="title" id="homeTitleText">통번역 연습</div>
     <button class="main-menu-link" id="topMainMenuBtn" type="button" style="display:none;">메인메뉴</button>
     <button class="icon-btn" id="goSaved">
       <span class="em">🔖</span> 북마크
@@ -617,24 +631,25 @@ html, body {
   <div id="mainMenuArea" class="menu-body">
     <div class="menu-title">메인메뉴</div>
     <div class="menu-subtitle">학습할 자료 유형을 선택하세요</div>
+    <div id="sheetApiStatus" class="api-status"></div>
 
     <div class="menu-grid">
       <button class="menu-btn" type="button" data-category="sermon">
         <span class="menu-emoji">🎙️</span>
         <span class="menu-label">설교</span>
-        <span class="menu-count" id="sermonCount">0개</span>
+        <span class="menu-count" id="sermonCount">불러오는 중</span>
       </button>
 
       <button class="menu-btn" type="button" data-category="book">
         <span class="menu-emoji">📚</span>
         <span class="menu-label">도서</span>
-        <span class="menu-count" id="bookCount">0개</span>
+        <span class="menu-count" id="bookCount">불러오는 중</span>
       </button>
 
       <button class="menu-btn" type="button" data-category="term">
         <span class="menu-emoji">🧾</span>
         <span class="menu-label">용어</span>
-        <span class="menu-count" id="termCount">0개</span>
+        <span class="menu-count" id="termCount">불러오는 중</span>
       </button>
     </div>
   </div>
@@ -735,66 +750,41 @@ html, body {
 
 
 <script>
-/* ─────────────────────────────────────────────────────
+console.log('translation index loaded: syntax-fixed-2026-05-09-v4');
+/* -----------------------------------------------------
    GitHub Pages 전용 버전
-   - Google Sheets API로 공개 Google Sheet의 탭 목록을 자동으로 읽음
-   - 각 탭의 실제 문장 데이터는 Google Visualization JSONP 방식으로 읽음
+   - Google Sheets API로 전체 탭 이름 자동 조회
+   - 각 탭의 문장 데이터는 공개 Google Sheet를 Google Visualization JSONP 방식으로 읽음
    - Google Sheet 공유 설정: 링크가 있는 모든 사용자 → 뷰어
-───────────────────────────────────────────────────── */
+----------------------------------------------------- */
 const SPREADSHEET_ID = '1Pg2C4O6owsc89RcX7RN_mZ1c_htMZb2SI1b6ZdTh1Bg';
 const GOOGLE_SHEETS_API_KEY = 'AIzaSyC-OVbR7yvIm0KoY-8zSOt6ENAyxDH4_5k';
+const DEFAULT_SHEET = '그리스도인의 교제생활 20250316';
+const sheetCache = new Map();
 
-// 카테고리 분류 규칙
-// - 설교: 제목 안에 20xxxxxx 형식의 날짜가 들어간 시트
-// - 도서: 제목 안에 (도서)가 들어간 시트
-// - 용어: 제목 안에 용어가 들어간 시트
 const CATEGORY_CONFIG = {
   sermon: {
     label: '설교',
     countId: 'sermonCount',
-    test: name => /20\d{6}/.test(name)
+    test: name => /20\d{6}/.test(String(name || ''))
   },
   book: {
     label: '도서',
     countId: 'bookCount',
-    test: name => name.includes('(도서)')
+    test: name => String(name || '').includes('(도서)')
   },
   term: {
     label: '용어',
     countId: 'termCount',
-    test: name => name.includes('용어')
+    test: name => String(name || '').includes('용어')
   }
 };
 
-const DEFAULT_SHEET = '그리스도인의 교제생활 20250316';
-const sheetCache = new Map();
-
-async function fetchSheetNames() {
-  const fields = 'sheets(properties(title))';
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(SPREADSHEET_ID)}?fields=${encodeURIComponent(fields)}&key=${encodeURIComponent(GOOGLE_SHEETS_API_KEY)}`;
-  const response = await fetch(url);
-  const data = await response.json().catch(() => null);
-
-  if (!response.ok || data?.error) {
-    throw new Error(data?.error?.message || '구글시트 탭 목록을 불러오지 못했습니다.');
-  }
-
-  const names = (data.sheets || [])
-    .map(sheet => sheet?.properties?.title)
-    .filter(Boolean);
-
-  if (!names.length) {
-    throw new Error('구글시트에서 탭 이름을 찾지 못했습니다.');
-  }
-
-  return names;
-}
-
-/* ── 로딩 표시 ── */
+/* Loading */
 const overlay = document.getElementById('loadingOverlay');
 function setLoading(on) { overlay.classList.toggle('show', on); }
 
-/* ── 화면 전환 ── */
+/* Screen navigation */
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + name).classList.add('active');
@@ -806,7 +796,42 @@ function showGridError(message) {
     `<p style="color:#dc2626;font-size:1rem;line-height:1.6;padding:24px;background:#fff;border:1px solid #fecaca;border-radius:16px;">⚠️ ${message}</p>`;
 }
 
-/* ── Google Visualization JSONP 로더 ── */
+function setApiStatus(message = '') {
+  const box = document.getElementById('sheetApiStatus');
+  if (!box) return;
+  box.textContent = message;
+  box.classList.toggle('show', Boolean(message));
+}
+
+async function fetchSheetNames() {
+  const fields = 'sheets(properties(title))';
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(SPREADSHEET_ID)}?fields=${encodeURIComponent(fields)}&key=${encodeURIComponent(GOOGLE_SHEETS_API_KEY)}`;
+
+  const response = await fetch(url, { method: 'GET', cache: 'no-store' });
+  let payload = null;
+  try {
+    payload = await response.json();
+  } catch (e) {
+    throw new Error(`Google Sheets API 응답을 JSON으로 읽지 못했습니다. HTTP ${response.status}`);
+  }
+
+  if (!response.ok) {
+    const apiMessage = payload?.error?.message || `HTTP ${response.status}`;
+    throw new Error(apiMessage);
+  }
+
+  const names = (payload.sheets || [])
+    .map(sheet => sheet?.properties?.title)
+    .filter(Boolean);
+
+  if (!names.length) {
+    throw new Error('스프레드시트에서 탭 이름을 찾지 못했습니다.');
+  }
+
+  return names;
+}
+
+/* Google Visualization JSONP loader */
 function loadGvizTable(sheetName) {
   if (sheetCache.has(sheetName)) return Promise.resolve(sheetCache.get(sheetName));
 
@@ -922,14 +947,16 @@ async function getFavoriteSentences(numbers) {
   return result;
 }
 
-/* ═══════════ HOME / MAIN MENU ═══════════ */
+/* HOME / MAIN MENU */
 let allSheets = [];
 let currentCategoryKey = null;
 let currentCategorySheets = [];
 
 async function initHome() {
   setLoading(true);
-  setCategoryCountText('로딩');
+  setApiStatus('');
+  setCategoryCountsLoading();
+
   try {
     allSheets = await fetchSheetNames();
     allSheets.sort((a, b) => {
@@ -937,22 +964,15 @@ async function initHome() {
       if (b === DEFAULT_SHEET) return 1;
       return a.localeCompare(b, 'ko');
     });
-    console.log('불러온 구글시트 탭 목록:', allSheets);
-
     updateCategoryCounts();
-    showMainMenu();
   } catch (e) {
-    console.error(e);
+    console.error('탭 목록 로딩 실패:', e);
     allSheets = [];
-    showMainMenu();
-    setCategoryCountText('오류');
-    alert('구글시트 탭 목록을 불러오지 못했습니다.
-
-' + e.message + '
-
-확인: Google Sheets API가 활성화되어 있고, API 키 제한 및 시트 공유 설정이 올바른지 확인하세요.');
+    updateCategoryCounts();
+    setApiStatus('구글시트 탭 목록을 불러오지 못했습니다. ' + e.message + ' / API 키 제한, Google Sheets API 활성화, 스프레드시트 공유 권한을 확인하세요.');
   } finally {
     setLoading(false);
+    showMainMenu();
   }
 }
 
@@ -970,18 +990,18 @@ document.getElementById('searchInput').addEventListener('input', e => {
   renderSheetGrid(q ? base.filter(n => n.includes(q)) : base);
 });
 
+function setCategoryCountsLoading() {
+  Object.values(CATEGORY_CONFIG).forEach(config => {
+    const el = document.getElementById(config.countId);
+    if (el) el.textContent = '불러오는 중';
+  });
+}
+
 function updateCategoryCounts() {
   Object.entries(CATEGORY_CONFIG).forEach(([key, config]) => {
     const count = allSheets.filter(config.test).length;
     const el = document.getElementById(config.countId);
     if (el) el.textContent = `${count}개`;
-  });
-}
-
-function setCategoryCountText(text) {
-  Object.values(CATEGORY_CONFIG).forEach(config => {
-    const el = document.getElementById(config.countId);
-    if (el) el.textContent = text;
   });
 }
 
@@ -991,7 +1011,7 @@ function showMainMenu() {
   document.getElementById('mainMenuArea').style.display = 'block';
   document.getElementById('sheetListArea').style.display = 'none';
   document.getElementById('searchInput').value = '';
-  document.getElementById('topAppTitle').style.display = 'block';
+  document.getElementById('homeTitleText').style.display = 'block';
   document.getElementById('topMainMenuBtn').style.display = 'none';
   showScreen('home');
 }
@@ -1008,7 +1028,7 @@ function openCategory(categoryKey) {
   document.getElementById('searchInput').placeholder = `${config.label} 시트 이름 검색...`;
   document.getElementById('mainMenuArea').style.display = 'none';
   document.getElementById('sheetListArea').style.display = 'block';
-  document.getElementById('topAppTitle').style.display = 'none';
+  document.getElementById('homeTitleText').style.display = 'none';
   document.getElementById('topMainMenuBtn').style.display = 'inline-flex';
 
   renderSheetGrid(currentCategorySheets);
@@ -1032,7 +1052,7 @@ function renderSheetGrid(list) {
   });
 }
 
-/* ═══════════ LEARN ═══════════ */
+/* LEARN */
 let currentSheet = '';
 let currentSentences = [];
 let currentIndex = 0;
@@ -1120,7 +1140,7 @@ function renderLearn() {
   toggleBtn.classList.toggle('active', alwaysShowAnswer);
 }
 
-/* 이전/다음 */
+/* Previous / Next */
 document.getElementById('learnPrev').onclick = () => {
   if (currentIndex > 0) { currentIndex--; renderLearn(); }
 };
@@ -1128,19 +1148,19 @@ document.getElementById('learnNext').onclick = () => {
   if (currentIndex < currentSentences.length - 1) { currentIndex++; renderLearn(); }
 };
 
-/* 슬라이더 */
+/* Slider */
 document.getElementById('progressSlider').addEventListener('input', e => {
   const idx = Number(e.target.value) - 1;
   if (idx >= 0 && idx < currentSentences.length) { currentIndex = idx; renderLearn(); }
 });
 
-/* 언어 전환 */
+/* Language switch */
 document.getElementById('learnSwitch').onclick = () => {
   learnMode = learnMode === 'KR_TO_VI' ? 'VI_TO_KR' : 'KR_TO_VI';
   renderLearn();
 };
 
-/* 정답 항상 켜기/끄기 */
+/* Toggle always show answer */
 toggleBtn.onclick = () => {
   alwaysShowAnswer = !alwaysShowAnswer;
   cover.classList.toggle('hide', alwaysShowAnswer);
@@ -1148,12 +1168,12 @@ toggleBtn.onclick = () => {
   toggleBtn.classList.toggle('active', alwaysShowAnswer);
 };
 
-/* 정답 보기/숨기기 */
+/* Show/hide answer */
 document.getElementById('showAnswerBtn').onclick = () => {
   cover.classList.toggle('hide');
 };
 
-/* 홈 버튼 */
+/* Home buttons */
 document.getElementById('learnGoHome').onclick = showMainMenu;
 document.getElementById('learnMainMenuBtn').onclick = showMainMenu;
 
@@ -1173,7 +1193,7 @@ document.getElementById('learnTTSAnswer').onclick = () => {
         learnMode === 'KR_TO_VI' ? 'vi-VN' : 'ko-KR');
 };
 
-/* 즐겨찾기 토글 */
+/* Favorite toggle */
 document.getElementById('learnBookmark').onclick = () => {
   const item = currentSentences[currentIndex];
   const key = bookmarkKey(currentSheet, item.number);
@@ -1187,7 +1207,7 @@ document.getElementById('learnBookmark').onclick = () => {
   renderLearn();
 };
 
-/* 북마크 토글 */
+/* Save toggle */
 document.getElementById('learnSaveIcon').onclick = () => {
   const item = currentSentences[currentIndex];
   const idx = savedPages.findIndex(
@@ -1199,7 +1219,7 @@ document.getElementById('learnSaveIcon').onclick = () => {
   renderLearn();
 };
 
-/* ═══════════ FAVORITE ═══════════ */
+/* FAVORITE */
 document.getElementById('goFavorite').onclick = async () => {
   showScreen('favorite');
   setLoading(true);
@@ -1267,7 +1287,7 @@ function renderFavorite(items) {
   });
 }
 
-/* ═══════════ SAVED ═══════════ */
+/* SAVED */
 document.getElementById('goSaved').onclick = () => {
   showScreen('saved');
   renderSaved();
