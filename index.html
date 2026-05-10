@@ -1116,6 +1116,12 @@ html[data-theme="dark"] .ui-lang-btn {
 }
 
 </style>
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="theme-color" content="#111827">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="통번역">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
 <div id="loadingOverlay">
@@ -2145,6 +2151,11 @@ initUsageGuide();
 initTheme();
 applyI18n();
 initHome();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./service-worker.js");
+}
 </script>
 </body>
 </html>
